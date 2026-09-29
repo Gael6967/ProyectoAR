@@ -12,6 +12,8 @@ Verificado en este entorno el 29 de septiembre de 2026. Se probó el proyecto lo
 - Generación de QR para una URL HTTPS de prueba; rechazo de HTTP/localhost. Se genera como SVG con margen de cuatro módulos. Esta URL de prueba no se entrega como una publicación real.
 - Permiso de cámara denegado/sin dispositivo: aparece la ayuda y se puede regresar al inicio.
 - **Tracking real con ARToolkit:** navegador Edge/Chromium en una sesión de prueba, con entrada de webcam sintética que contiene el marcador Hiro. El reconocimiento no se reemplazó por eventos artificiales.
+- Carga del archivo `motor-m01.glb` durante el seguimiento: geometría con profundidad en tres ejes, diez colores de materiales y vista SVG de respaldo oculta cuando el 3D carga bien.
+- Captura visual en viewport móvil de 390 × 844 píxeles: carcasa azul, rodamiento naranja, conexión amarilla y eje metálico distinguibles sobre el marcador.
 - Detección inicial, selección del hotspot de rodamiento, activación de geometría de riesgo, pérdida del marcador, ocultamiento de elementos anclados y recuperación posterior.
 - Procedimiento completo en modo AR, registro con `mode: marker-ar` y detención de las pistas de cámara al completar.
 - Sin excepciones JavaScript ni solicitudes HTTP fallidas durante el recorrido AR comprobado. Las bibliotecas emiten algunos avisos internos no bloqueantes.

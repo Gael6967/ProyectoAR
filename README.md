@@ -76,7 +76,7 @@ El QR se genera completamente en el navegador, sin enviar la URL a servicios de 
 - Coloca la hoja plana sobre una mesa, atril o junto a una maqueta de motor. La ilustración acompaña al marcador; **el dibujo del motor solo no se reconoce**.
 - Mantén visibles las cuatro esquinas del marco negro. Empieza a 30–60 cm y ajusta distancia y ángulo hasta que se detecte.
 - Evita papel brillante, sombras fuertes, reflejos y movimiento brusco. Puedes probar mostrando el marcador en otra pantalla, con brillo moderado.
-- El esquema digital del motor, los tres puntos interactivos y la zona roja se anclan al marcador. La tarjeta se mantiene dentro del área legible de la pantalla cuando se acerca al borde.
+- El motor 3D, los tres puntos interactivos y la zona roja se anclan al marcador. La tarjeta se mantiene dentro del área legible de la pantalla cuando se acerca al borde.
 
 ## Demostración en aproximadamente 100 segundos
 
@@ -95,7 +95,7 @@ Ensaya una vez en el mismo celular, navegador y red que usarás en clase. El mod
 
 - Inicio voluntario de la cámara, solicitud de permiso y mensajes para errores de acceso.
 - Reconocimiento real de marcador, ocultamiento al perderlo y recuperación al volver a verlo.
-- Esquema ligero en AR y tres hotspots táctiles, con botones equivalentes en el panel inferior.
+- Modelo 3D ligero en AR: carcasa azul, rodamiento naranja, conexión amarilla, eje de acero y base grafito. Tres hotspots táctiles, con botones equivalentes en el panel inferior.
 - Datos: Motor Eléctrico M-01, Advertencia, 82 °C, 7.2 mm/s, 3.842 h y 12/09/2026.
 - Rodamiento en riesgo y zona resaltada en rojo con advertencia por equipo energizado.
 - Procedimiento de cinco pasos, navegación hacia atrás y registro local del resultado.
@@ -130,12 +130,14 @@ app.js                     Estados, tracking, hotspots y procedimiento
 marcador.html              Hoja A4 imprimible
 qr.html / qr.js             Generador QR e impresión
 assets/motor.svg            Esquema técnico original del motor
+assets/motor-m01.glb         Modelo 3D del motor, de baja carga para celulares
 assets/hiro.png             Marcador Hiro imprimible
 assets/motor-m01.patt       Patrón óptico correspondiente
 assets/camera_para.dat      Calibración genérica ARToolkit
 assets/favicon.svg         Icono del proyecto
 vendor/                    Bibliotecas y licencias
 tools/serve.mjs             Servidor local sin dependencias
+tools/build_motor_glb.py    Generador editable del modelo 3D (Python estándar)
 INICIAR.cmd                Inicio local en Windows
 package.json               Comandos opcionales de Node.js
 .nojekyll                  Publicación estática en GitHub Pages
@@ -143,7 +145,7 @@ PRUEBAS.md                 Verificación y límites
 README.md                  Esta guía
 ```
 
-No se usa un modelo `.glb`: el esquema SVG se representa en planos ligeros sobre el marcador. Esto evita descargas y renderizado innecesarios.
+El modelo `.glb` tiene cerca de 100 KB, 1.680 triángulos y diez materiales identificados por componente. El SVG coloreado queda como vista de respaldo si falla la carga del 3D. Para cambiar colores o geometría, edita `COLORS` o las formas en `tools/build_motor_glb.py` y ejecútalo con `python tools/build_motor_glb.py` (o `py tools/build_motor_glb.py`) desde la raíz del proyecto; después vuelve a publicar `assets/motor-m01.glb`.
 
 ## Resolver problemas
 

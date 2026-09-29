@@ -82,9 +82,9 @@
           this.vector = new AFRAME.THREE.Vector3();
           this.targets = [
             ['floating-card', 0, .05, -.86],
-            ['anchor-motor', -.31, .06, .08],
-            ['anchor-bearing', .46, .08, .08],
-            ['anchor-electrical', -.02, .07, -.46]
+            ['anchor-motor', -.23, .63, .10],
+            ['anchor-bearing', .40, .59, .08],
+            ['anchor-electrical', -.13, .88, -.03]
           ].map(([id, x, y, z]) => ({element:$(id), x:x*AR_MODEL_SCALE, y:y*AR_MODEL_SCALE, z:z*AR_MODEL_SCALE}));
         },
         tick() {
@@ -136,21 +136,31 @@
       <a-scene embedded vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false"
         renderer="alpha: true; antialias: true; precision: medium" loading-screen="enabled: false"
         arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono; cameraParametersUrl: assets/camera_para.dat; sourceWidth: 1280; sourceHeight: 720; displayWidth: 1280; displayHeight: 720; canvasWidth: 640; canvasHeight: 480; maxDetectionRate: 30; patternRatio: 0.5">
-        <a-assets timeout="10000"><img id="motor-texture" src="assets/motor.svg" crossorigin="anonymous"></a-assets>
+        <a-assets timeout="10000">
+          <a-asset-item id="motor-glb" src="assets/motor-m01.glb"></a-asset-item>
+          <img id="motor-texture" src="assets/motor.svg" crossorigin="anonymous">
+        </a-assets>
         <a-marker id="motor-marker" type="pattern" url="assets/motor-m01.patt" size="1" smooth="true" smoothCount="5" smoothTolerance="0.01" smoothThreshold="2" emitevents="true" maintenance-anchors>
           <a-entity scale="${AR_MODEL_SCALE} ${AR_MODEL_SCALE} ${AR_MODEL_SCALE}">
-          <a-plane position="0 0.015 0" rotation="-90 0 0" width="2.15" height="1.05" material="shader: flat; color: #111820; transparent: true; opacity: 0.90; side: double"></a-plane>
-          <a-plane position="0 0.025 0" rotation="-90 0 0" width="2.6" height="1.506" material="shader: flat; src: #motor-texture; transparent: true; side: double; depthWrite: false"></a-plane>
-          <a-entity id="risk-geometry" visible="false">
-            <a-circle position="0.46 0.04 0.08" rotation="-90 0 0" radius="0.25" scale="1 1.25 1" material="shader: flat; color: #ff4949; transparent: true; opacity: 0.45; side: double; depthWrite: false"></a-circle>
-            <a-ring position="0.46 0.05 0.08" rotation="-90 0 0" radius-inner="0.25" radius-outer="0.27" scale="1 1.25 1" material="shader: flat; color: #ff6863; side: double"></a-ring>
-          </a-entity>
+            <a-entity id="motor-3d" gltf-model="#motor-glb"></a-entity>
+            <a-plane id="motor-fallback" visible="false" position="0 0.025 0" rotation="-90 0 0" width="1.6" height="0.93" material="shader: flat; src: #motor-texture; transparent: true; side: double; depthWrite: false"></a-plane>
+            <a-entity id="risk-geometry" visible="false">
+              <a-circle position="0.40 0.015 0" rotation="-90 0 0" radius="0.34" material="shader: flat; color: #ff3434; transparent: true; opacity: 0.44; side: double; depthWrite: false"></a-circle>
+              <a-ring position="0.40 0.025 0" rotation="-90 0 0" radius-inner="0.34" radius-outer="0.365" material="shader: flat; color: #ff7772; side: double"></a-ring>
+            </a-entity>
           </a-entity>
         </a-marker>
+        <a-light type="ambient" intensity="1.15" color="#ffffff"></a-light>
+        <a-light type="directional" intensity="0.85" color="#ffffff" position="-1 2 2"></a-light>
         <a-entity camera look-controls="enabled: false" wasd-controls="enabled: false"></a-entity>
       </a-scene>`;
     scene = $('scene-container').querySelector('a-scene');
     const marker = $('motor-marker');
+    $('motor-3d').addEventListener('model-error', () => {
+      $('motor-3d').setAttribute('visible', false);
+      $('motor-fallback').setAttribute('visible', true);
+      $('tracking-status').textContent = 'Vista 2D de respaldo';
+    });
     marker.addEventListener('markerFound', () => setTracking(true));
     marker.addEventListener('markerLost', () => setTracking(false));
     scene.addEventListener('loaded', () => {
