@@ -4,6 +4,15 @@ Asistente Inteligente de Mantenimiento Industrial. Prototipo académico para Tec
 
 **HTML + CSS + JavaScript + A-Frame 1.6.0 + AR.js 3.4.7.** Sitio estático, sin backend, cuentas de usuario ni instalación en el teléfono. Las dependencias están incluidas en `vendor/`.
 
+## Experiencia publicada
+
+- **Abrir en el celular:** https://gael6967.github.io/ProyectoAR/
+- **Imprimir el marcador:** https://gael6967.github.io/ProyectoAR/marcador.html
+- **Imprimir o descargar el QR:** https://gael6967.github.io/ProyectoAR/qr.html
+- **Código y actualizaciones:** https://github.com/Gael6967/ProyectoAR
+
+También se incluyen `QR-AR-Maintenance.png` y `QR-AR-Maintenance.svg`, que abren la dirección pública anterior. Escanea el QR de acceso y, dentro de la experiencia, apunta al marcador Hiro de la hoja separada.
+
 ## Comenzar en este computador
 
 1. Abre `INICIAR.cmd`. Requiere Node.js 18 o posterior en el computador de desarrollo.
@@ -24,7 +33,9 @@ No es necesario ejecutar `npm install`. `npm start` es equivalente. `npm run che
 
 ## Publicar en GitHub Pages
 
-No se ha publicado un sitio ni asignado una URL a una cuenta. Estos son los pasos para obtener la dirección real:
+Este proyecto está publicado desde la rama `main`, carpeta raíz, del repositorio `Gael6967/ProyectoAR`, con HTTPS. Para actualizarlo, reemplaza los archivos modificados en ese repositorio y espera a que **Actions → pages-build-deployment** termine correctamente. La URL y el QR se conservan mientras no cambies la cuenta o el nombre del repositorio.
+
+Para reproducir la publicación en otra cuenta:
 
 1. Inicia sesión en [GitHub](https://github.com/). Crea un repositorio llamado **ProyectoAR**. Para usar Pages con una cuenta gratuita, utiliza un repositorio público. El contenido del proyecto será visible públicamente.
 2. Sube **el contenido** de esta carpeta al repositorio, incluyendo `assets/` y `vendor/`. `index.html` debe quedar en la raíz, no dentro de otra carpeta `ProyectoAR`. No subas solamente el ZIP.

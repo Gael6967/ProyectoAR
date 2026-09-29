@@ -1,0 +1,18 @@
+AR MAINTENANCE — ENLACES DE LA DEMOSTRACIÓN
+
+Experiencia:
+https://gael6967.github.io/ProyectoAR/
+
+Marcador Hiro imprimible:
+https://gael6967.github.io/ProyectoAR/marcador.html
+
+QR para imprimir o descargar:
+https://gael6967.github.io/ProyectoAR/qr.html
+
+Repositorio:
+https://github.com/Gael6967/ProyectoAR
+
+El QR abre la página web. El marcador Hiro activa el reconocimiento AR.
+Usa las dos imágenes en hojas separadas.
+
+Antes de presentar: haz un ensayo con el teléfono y la iluminación reales.

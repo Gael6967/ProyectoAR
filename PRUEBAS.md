@@ -1,6 +1,6 @@
 # Verificación del prototipo
 
-Verificado en este entorno el 29 de septiembre de 2026. Son pruebas del proyecto local, no una certificación de todos los teléfonos.
+Verificado en este entorno el 29 de septiembre de 2026. Se probó el proyecto local y su versión pública HTTPS; no es una certificación de todos los teléfonos.
 
 ## Pruebas superadas
 
@@ -15,11 +15,14 @@ Verificado en este entorno el 29 de septiembre de 2026. Son pruebas del proyecto
 - Detección inicial, selección del hotspot de rodamiento, activación de geometría de riesgo, pérdida del marcador, ocultamiento de elementos anclados y recuperación posterior.
 - Procedimiento completo en modo AR, registro con `mode: marker-ar` y detención de las pistas de cámara al completar.
 - Sin excepciones JavaScript ni solicitudes HTTP fallidas durante el recorrido AR comprobado. Las bibliotecas emiten algunos avisos internos no bloqueantes.
+- Publicación correcta mediante GitHub Pages en `https://gael6967.github.io/ProyectoAR/`, desde la rama `main` y carpeta raíz, con HTTPS.
+- Comprobación de los 23 archivos públicos iniciales (sin los dos archivos ocultos de configuración): sus huellas SHA-256 coinciden con las copias locales.
+- Repetición satisfactoria del recorrido AR desde la URL pública con cámara sintética, incluyendo pérdida y recuperación del marcador y cierre de la cámara.
+- Lectura independiente del PNG QR con jsQR: codifica exactamente `https://gael6967.github.io/ProyectoAR/`.
 
 ## Verificación pendiente en el lugar de presentación
 
-- Publicar en una cuenta de GitHub y comprobar la URL pública y HTTPS.
-- Generar el QR definitivo desde esa URL y escanearlo con un teléfono real.
+- Escanear el QR definitivo con un teléfono real.
 - Verificar permisos, cámara trasera, legibilidad y seguimiento con el teléfono elegido (Chrome/Android o Safari/iPhone).
 - Probar la impresión real, iluminación y distancia a la hoja. La prueba de webcam sintética no mide enfoque, exposición, movimiento ni calidad de impresión.
 - Hacer un ensayo de aproximadamente 100 segundos en la red de la presentación.
