@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101113">
+  <meta name="description" content="AR Maintenance: inspección industrial en realidad aumentada. Prototipo académico con datos simulados.">
+  <title>AR Maintenance · Inspección industrial</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main id="home" class="home">
+    <header class="masthead"><a class="brand" href="./" aria-label="AR Maintenance, inicio"><span class="brand-icon">AR</span><span>MAINTENANCE<span class="brand-sub">INDUSTRIAL INTELLIGENCE</span></span></a><span class="version">PROTOTIPO ACADÉMICO <b>01</b></span></header>
+    <section class="hero" aria-labelledby="title">
+      <div class="intro">
+        <p class="eyebrow"><span></span> REALIDAD AUMENTADA / INDUSTRIA 4.0</p>
+        <h1 id="title">AR<br><span>MAINTENANCE</span><span class="title-dot">.</span></h1>
+        <p class="subtitle">Asistente Inteligente de<br>Mantenimiento Industrial</p>
+        <p class="description">La información que necesitas.<br>Justo donde la necesitas.</p>
+        <button class="button primary start-button" id="start"><span class="scan-icon" aria-hidden="true">⌗</span> INICIAR INSPECCIÓN</button>
+        <p class="camera-hint">Apunta la cámara hacia el marcador ubicado en la máquina.</p>
+        <button id="demo" class="text-button">Ensayar sin cámara <span aria-hidden="true">↗</span></button>
+      </div>
+      <div class="equipment-preview">
+        <div class="preview-heading"><span>EQUIPO / M-01</span><span class="badge warning">⚠ ADVERTENCIA</span></div>
+        <div class="motor-visual"><div class="crosshair top-left"></div><div class="crosshair bottom-right"></div><img src="assets/motor.svg" alt="Diagrama técnico de un motor eléctrico, con rodamiento delantero y conexión eléctrica" width="760" height="440"><span class="visual-label">MOTOR ELÉCTRICO M-01</span><span class="diagram-note">VISTA ESQUEMÁTICA</span></div>
+        <div class="preview-metrics"><div><span>TEMPERATURA</span><strong>82<small> °C</small></strong><i class="spark temperature"></i></div><div><span>VIBRACIÓN</span><strong>7.2<small> mm/s</small></strong><i class="spark vibration"></i></div><div><span>OPERACIÓN</span><strong>3.842<small> h</small></strong><span class="metric-note">Datos simulados</span></div></div>
+        <div class="preview-footer"><span class="signal-bars" aria-hidden="true">▂▄▆</span> TELEMETRÍA SIMULADA <span>ÚLT. MANT. 12/09/2026</span></div>
+      </div>
+    </section>
+    <section class="quick-guide" aria-label="Cómo comenzar"><div><b>01</b><p><strong>Prepara el marcador</strong><a href="marcador.html" target="_blank" rel="noopener">Ver e imprimir marcador ↗</a></p></div><div><b>02</b><p><strong>Activa tu cámara</strong><span>Desde el navegador de tu celular.</span></p></div><div><b>03</b><p><strong>Inspecciona el equipo</strong><span>Explora las zonas y sigue los pasos.</span></p></div></section>
+    <footer class="home-footer"><p>Sensores IoT <span>→</span> Cloud <span>→</span> Análisis <span>→</span> Realidad aumentada <span>→</span> Técnico</p><div><span>Demostración con datos simulados</span><a href="qr.html">QR de acceso ↗</a><button class="text-button" id="about-open">Acerca del proyecto</button></div></footer>
+  </main>
+
+  <section id="experience" class="experience" hidden aria-label="Inspección del equipo">
+    <div id="scene-container" aria-hidden="true"></div>
+    <div id="demo-background" hidden><div class="demo-grid"></div><img src="assets/motor.svg" alt="Motor de demostración"></div>
+    <div class="experience-top"><a class="mini-brand" href="./">[ AR ] <span>MAINTENANCE</span></a><button class="icon-button" id="exit" aria-label="Salir de la inspección">✕</button></div>
+    <div class="session-status"><span id="tracking-status" class="tracking-status">Preparando cámara…</span><span class="simulation-label" id="simulation-label">DATOS SIMULADOS</span></div>
+    <div id="tracking-guide" class="tracking-guide"><div class="viewfinder"><i></i><i></i><i></i><i></i><img src="assets/hiro.png" alt="Marcador Hiro que debes encuadrar"></div><h2 id="guide-title">Autoriza el uso de la cámara</h2><p id="guide-text">La cámara se utiliza para reconocer el marcador. Las imágenes no se envían a un servidor.</p><button class="button secondary" id="resume-video" hidden>ACTIVAR VIDEO</button></div>
+    <div id="anchors" hidden>
+      <div id="floating-card" class="floating-card"><span class="floating-id">M-01 / EQUIPO DETECTADO</span><strong>Motor Eléctrico M-01</strong><span class="badge warning">⚠ Advertencia</span><p><b>82 °C</b> Temperatura <span>·</span> <b>7.2 mm/s</b> Vibración</p></div>
+      <button class="hotspot" data-part="motor" id="anchor-motor" aria-label="1. Motor"><span>1</span><b>Motor</b></button>
+      <button class="hotspot danger" data-part="bearing" id="anchor-bearing" aria-label="2. Rodamiento"><span>2</span><b>Rodamiento</b></button>
+      <button class="hotspot" data-part="electrical" id="anchor-electrical" aria-label="3. Conexión eléctrica"><span>3</span><b>Conexión eléctrica</b></button>
+      <div id="demo-risk" hidden aria-hidden="true"></div>
+    </div>
+    <div id="lost-notice" class="lost-notice" hidden role="status">Marcador fuera de vista. Vuelve a encuadrarlo.</div>
+    <section id="inspection-panel" class="inspection-panel glass" hidden aria-label="Controles de inspección">
+      <div class="panel-heading"><span class="eyebrow">INSPECCIÓN / M-01</span><span class="badge warning">⚠ Anomalía detectada</span></div>
+      <div class="part-tabs" role="group" aria-label="Selecciona un componente"><button data-part="motor" aria-pressed="true">① Motor</button><button data-part="bearing" aria-pressed="false">② Rodamiento</button><button data-part="electrical" aria-pressed="false">③ Conexión eléctrica</button></div>
+      <div class="part-detail" aria-live="polite"><div><h2 id="part-name">Motor Eléctrico M-01</h2><span id="part-status" class="detail-status warning-text">Advertencia</span></div><p id="part-description">Temperatura elevada: 82 °C. Se recomienda revisar la ventilación del motor.</p></div>
+      <div id="risk-notice" class="risk-notice" hidden role="status"><strong>⚠ ZONA DE RIESGO</strong><p>No manipular el equipo mientras se encuentre energizado.</p></div>
+      <div class="inspection-actions"><button id="risk-toggle" class="button secondary" aria-pressed="false">VER ZONA DE RIESGO</button><button id="procedure-start" class="button primary">INICIAR PROCEDIMIENTO</button></div>
+    </section>
+    <section id="procedure-panel" class="procedure-panel glass" hidden aria-labelledby="step-title">
+      <div class="panel-heading"><span class="eyebrow">PROCEDIMIENTO GUIADO</span><span id="step-count">01 / 05</span></div><div id="step-progress" class="step-progress" role="progressbar" aria-label="Avance del procedimiento" aria-valuemin="0" aria-valuemax="5" aria-valuenow="1"><i></i></div>
+      <p class="step-label" id="step-label">PASO 1</p><h2 id="step-title" tabindex="-1">Detener el equipo.</h2><p id="step-description"></p>
+      <div id="record-field" hidden><label for="inspection-result">Resultado de la inspección simulada</label><select id="inspection-result"><option>Mantenimiento preventivo recomendado.</option>Derivar a evaluación especializada.</option>Requiere nueva inspección.</option></select><label for="inspection-notes">Observación (opcional)</label><textarea id="inspection-notes" rows="2" maxlength="240" placeholder="Ej. Vibración elevada en rodamiento delantero."></textarea></div>
+      <p class="procedure-note">Simulación académica. Los pasos no ejecutan acciones sobre un equipo real.</p><div class="procedure-actions"><button class="button secondary" id="step-back">VOLVER</button><button class="button primary" id="step-next">SIGUIENTE</button></div>
+    </section>
+    <section id="completion" class="completion glass" hidden aria-labelledby="completion-title"><div class="completion-icon" aria-hidden="true">✓</div><p class="eyebrow">PROCEDIMIENTO FINALIZADO</p><h2 id="completion-title" tabindex="-1">INSPECCIÓN<br>COMPLETADA</h2><p>Motor Eléctrico M-01</p><div class="completion-result"><span>RESULTADO</span><strong id="completion-result">Mantenimiento preventivo recomendado.</strong></div><dl><div><dt>Pasos completados</dt><dd>5 de 5</dd></div><div><dt>Último mantenimiento</dt><dd>12/09/2026</dd></div><div><dt>Horas de operación</dt><dd>3.842 h</dd></div></dl><p id="save-status" class="muted">Registro guardado en este dispositivo.</p><button id="finish" class="button primary">FINALIZAR</button></section>
+    <div class="experience-bottom-note" id="experience-bottom-note">AR MAINTENANCE · PROTOTIPO ACADÉMICO</div>
+  </section>
+  <dialog id="error-dialog"><p class="eyebrow">CÁMARA / ACCESO</p><h2 id="error-title">No se pudo iniciar la cámara</h2><p id="error-message"></p><div class="dialog-actions"><button class="button primary" id="retry">REINTENTAR</button><button class="button secondary" id="error-demo">ENSAYAR SIN CÁMARA</button><button class="text-button" id="error-home">Volver al inicio</button></div></dialog>
+  <dialog id="about-dialog"><button class="icon-button dialog-close" id="about-close" aria-label="Cerrar">✕</button><p class="eyebrow">TECNOLOGÍAS DISRUPTIVAS</p><h2>Información industrial,<br>en contexto.</h2><p>AR Maintenance representa un asistente que conecta los datos de una máquina con el técnico que la inspecciona.</p><ol class="architecture"><li>Máquina industrial</li><li>Sensores IoT</li><li>Plataforma Cloud</li><li>Análisis de datos</li><li>AR Maintenance</li><li>Técnico de mantenimiento</li></ol><p class="muted">En este prototipo los datos y el análisis son simulados. El reconocimiento del marcador y la cámara sí funcionan en el navegador. No se conecta a sensores ni a servicios Cloud. El registro de la inspección es local.</p><a href="marcador.html" class="button secondary">PREPARAR LA DEMOSTRACIÓN</a></dialog>
+</body>
+</html>

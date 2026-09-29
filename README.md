@@ -1,0 +1,166 @@
+# AR Maintenance
+
+Asistente Inteligente de Mantenimiento Industrial. Prototipo académico para Tecnologías Disruptivas.
+
+**HTML + CSS + JavaScript + A-Frame 1.6.0 + AR.js 3.4.7.** Sitio estático, sin backend, cuentas de usuario ni instalación en el teléfono. Las dependencias están incluidas en `vendor/`.
+
+## Comenzar en este computador
+
+1. Abre `INICIAR.cmd`. Requiere Node.js 18 o posterior en el computador de desarrollo.
+2. Visita **http://localhost:8080** si el navegador no se abre automáticamente.
+3. Pulsa **Ensayar sin cámara** para recorrer la demostración completa.
+4. Abre **Ver e imprimir marcador** y prepara la hoja A4.
+5. Para probar AR en el computador, pulsa **Iniciar inspección**, permite la cámara y muestra el marcador en papel u otra pantalla.
+
+Alternativa desde una terminal abierta en esta carpeta:
+
+```sh
+node tools/serve.mjs
+```
+
+No es necesario ejecutar `npm install`. `npm start` es equivalente. `npm run check` comprueba la sintaxis del código propio. Detén el servidor con Ctrl+C. Si el puerto 8080 está ocupado, en PowerShell: `$env:PORT=8081; node tools/serve.mjs` y abre `http://localhost:8081`.
+
+**No abras `index.html` con doble clic para usar la cámara.** Usa un servidor local o la versión publicada con HTTPS. `localhost` en el celular apunta al propio celular; no abre el servidor de tu computador. Para la demostración móvil, usa GitHub Pages.
+
+## Publicar en GitHub Pages
+
+No se ha publicado un sitio ni asignado una URL a una cuenta. Estos son los pasos para obtener la dirección real:
+
+1. Inicia sesión en [GitHub](https://github.com/). Crea un repositorio llamado **ProyectoAR**. Para usar Pages con una cuenta gratuita, utiliza un repositorio público. El contenido del proyecto será visible públicamente.
+2. Sube **el contenido** de esta carpeta al repositorio, incluyendo `assets/` y `vendor/`. `index.html` debe quedar en la raíz, no dentro de otra carpeta `ProyectoAR`. No subas solamente el ZIP.
+3. En la web de GitHub puedes usar **Add file → Upload files** y arrastrar todos los archivos y carpetas. Confirma con **Commit changes**. Cada archivo del proyecto está por debajo del límite de carga web de 25 MiB.
+4. Abre **Settings → Pages**.
+5. En **Build and deployment**, selecciona **Deploy from a branch**.
+6. Selecciona la rama **main**, carpeta **/(root)**, y pulsa **Save**.
+7. Espera a que termine la publicación. Copia la URL mostrada en **Settings → Pages** y comprueba que abra el inicio.
+8. Usa HTTPS. Si aparece **Enforce HTTPS**, déjalo activado. No necesitas dominio propio.
+
+El formato será:
+
+```text
+https://TU-USUARIO.github.io/ProyectoAR/
+```
+
+**Es una plantilla, no una dirección publicada.** Sustituye `TU-USUARIO` por la cuenta propietaria o copia la URL que GitHub realmente entregue. El nombre del repositorio y sus mayúsculas forman parte de la ruta.
+
+La página es estática: no hay comando de compilación, claves ni variables secretas. `.nojekyll` evita que GitHub procese los archivos como un sitio Jekyll. Si cargas por navegador y no aparece ese archivo oculto, puedes crearlo mediante **Add file → Create new file**; el proyecto tampoco depende de recursos con nombres que empiecen por guion bajo.
+
+Documentación oficial: [crear un sitio de GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site), [elegir rama y carpeta de publicación](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site), [cargar archivos](https://docs.github.com/en/repositories/working-with-files/managing-files/adding-a-file-to-a-repository).
+
+## Crear el QR definitivo
+
+1. Una vez publicado, abre **QR de acceso** desde el pie de la página. También puedes abrir `https://TU-USUARIO.github.io/ProyectoAR/qr.html`.
+2. Desde una dirección pública HTTPS, el generador toma automáticamente la URL de la carpeta del proyecto. Comprueba que sea la URL correcta.
+3. Si estás en el servidor local, pega manualmente la URL pública en el campo y pulsa **Generar QR**.
+4. Usa **Imprimir QR** o **Descargar SVG**.
+5. Escanéalo con el celular y verifica la dirección antes de la presentación.
+
+El QR se genera completamente en el navegador, sin enviar la URL a servicios de terceros. **El QR solo abre la web. El marcador Hiro reconoce el equipo.** Imprime ambas cosas en hojas separadas.
+
+## Preparar el marcador
+
+- Abre `marcador.html` desde el servidor y pulsa **Imprimir marcador A4**.
+- Configura papel A4, escala 100 %, desactiva encabezados y pies del navegador y conserva el margen blanco.
+- La imagen `assets/hiro.png` también sirve directamente. El cuadrado negro mide aproximadamente 10 cm en la hoja preparada.
+- Coloca la hoja plana sobre una mesa, atril o junto a una maqueta de motor. La ilustración acompaña al marcador; **el dibujo del motor solo no se reconoce**.
+- Mantén visibles las cuatro esquinas del marco negro. Empieza a 30–60 cm y ajusta distancia y ángulo hasta que se detecte.
+- Evita papel brillante, sombras fuertes, reflejos y movimiento brusco. Puedes probar mostrando el marcador en otra pantalla, con brillo moderado.
+- El esquema digital del motor, los tres puntos interactivos y la zona roja se anclan al marcador. La tarjeta se mantiene dentro del área legible de la pantalla cuando se acerca al borde.
+
+## Demostración en aproximadamente 100 segundos
+
+| Tiempo | Acción y explicación |
+| --- | --- |
+| 0–15 s | Escanea el QR. «Accedemos desde el navegador, sin instalar una app». |
+| 15–30 s | Inicia la inspección, autoriza la cámara y encuadra el marcador. |
+| 30–45 s | Muestra la alerta: 82 °C y 7.2 mm/s. «Representamos lecturas de sensores IoT». |
+| 45–60 s | Pulsa **② Rodamiento** y **Ver zona de riesgo**. Muestra el componente resaltado. |
+| 60–90 s | Inicia el procedimiento. Recorre los cinco pasos con **Siguiente**, registra el resultado y completa. |
+| 90–100 s | Muestra **Inspección completada** y explica que los datos son simulados. Pulsa **Finalizar**. |
+
+Ensaya una vez en el mismo celular, navegador y red que usarás en clase. El modo **Ensayar sin cámara** permite practicar las interacciones y sirve como apoyo si el dispositivo no puede usar la cámara; está rotulado como ensayo y no representa reconocimiento real.
+
+## Funciones incluidas
+
+- Inicio voluntario de la cámara, solicitud de permiso y mensajes para errores de acceso.
+- Reconocimiento real de marcador, ocultamiento al perderlo y recuperación al volver a verlo.
+- Esquema ligero en AR y tres hotspots táctiles, con botones equivalentes en el panel inferior.
+- Datos: Motor Eléctrico M-01, Advertencia, 82 °C, 7.2 mm/s, 3.842 h y 12/09/2026.
+- Rodamiento en riesgo y zona resaltada en rojo con advertencia por equipo energizado.
+- Procedimiento de cinco pasos, navegación hacia atrás y registro local del resultado.
+- Pantalla de finalización y cierre de la cámara. Botón de salida disponible durante la sesión.
+- Vista explicativa de la arquitectura conceptual y modo de ensayo.
+- Generador QR local y hoja de marcador imprimible.
+
+Los controles del panel quedan disponibles después de la primera detección para facilitar el procedimiento si apartas el teléfono. Al perder el marcador se ocultan los elementos anclados y se muestra **Última lectura · sin seguimiento**; no se simula una detección nueva.
+
+## Qué es real y qué es simulado
+
+```text
+Máquina industrial → Sensores IoT → Plataforma Cloud → Análisis de datos
+                                                        ↓
+                                                 AR Maintenance
+                                                        ↓
+                                               Técnico de mantenimiento
+```
+
+En una solución industrial, los sensores enviarían telemetría a una plataforma Cloud y una API entregaría el diagnóstico a la interfaz AR. Aquí los valores y recomendaciones están definidos en el código. **No hay conexión a sensores, backend, IA ni servicios Cloud.** El reconocimiento óptico, las superposiciones y las interacciones sí son funcionales.
+
+La cámara se procesa localmente en el navegador. No se captura ni sube video. La última inspección se guarda en `localStorage` bajo `ar-maintenance:last-inspection`, reemplazando la anterior. Incluye fecha, resultado, observación, datos y la indicación de simulación. No se sincroniza entre teléfonos. Si el almacenamiento está bloqueado, se completa el recorrido y se informa que no se guardó.
+
+El procedimiento es demostrativo y no certifica una intervención industrial. En un entorno real debe sustituirse por el procedimiento autorizado para el equipo y ser ejecutado por personal capacitado.
+
+## Archivos
+
+```text
+index.html                 Pantalla inicial y experiencia
+styles.css                 Diseño y adaptación a celular
+app.js                     Estados, tracking, hotspots y procedimiento
+marcador.html              Hoja A4 imprimible
+qr.html / qr.js             Generador QR e impresión
+assets/motor.svg            Esquema técnico original del motor
+assets/hiro.png             Marcador Hiro imprimible
+assets/motor-m01.patt       Patrón óptico correspondiente
+assets/camera_para.dat      Calibración genérica ARToolkit
+assets/favicon.svg         Icono del proyecto
+vendor/                    Bibliotecas y licencias
+tools/serve.mjs             Servidor local sin dependencias
+INICIAR.cmd                Inicio local en Windows
+package.json               Comandos opcionales de Node.js
+.nojekyll                  Publicación estática en GitHub Pages
+PRUEBAS.md                 Verificación y límites
+README.md                  Esta guía
+```
+
+No se usa un modelo `.glb`: el esquema SVG se representa en planos ligeros sobre el marcador. Esto evita descargas y renderizado innecesarios.
+
+## Resolver problemas
+
+| Problema | Solución |
+| --- | --- |
+| No solicita cámara | Abre la dirección HTTPS en el navegador externo. Evita el navegador integrado de mensajería. Revisa el permiso del sitio. |
+| Permiso denegado | Permite la cámara en los ajustes del navegador para este sitio y pulsa **Reintentar**. |
+| No hay cámara disponible | Cierra otras aplicaciones que la usen. Para probar en PC sin webcam utiliza **Ensayar sin cámara**. |
+| Video detenido en iPhone | Pulsa **Activar video** si aparece. Abre el enlace directamente en Safari y vuelve a iniciar. |
+| No detecta el equipo | Usa Hiro, no el QR ni solo el dibujo. Mejora la iluminación y encuadra el cuadrado entero. |
+| La tarjeta tapa parte del equipo | Aleja un poco el celular. El panel inferior conserva los tres botones accesibles. |
+| Se pierde el marcador | Vuelve a encuadrarlo. El procedimiento en curso conserva su paso. |
+| Error 404 al publicar | Confirma `index.html` en la raíz de la rama elegida y espera a que Pages termine el despliegue. |
+| Se ve el inicio pero no carga AR | Revisa que `vendor/` y `assets/` estén publicadas con sus nombres exactos. |
+| Cambios no aparecen | Recarga la página. Si usas GitHub Pages, espera a que termine la nueva publicación. |
+| Un QR abre otra página | Regenera con la URL exacta de Pages. Verifica mayúsculas y la barra final. |
+
+Para la presentación, usa preferentemente Chrome en Android o Safari en iPhone con WebGL y cámara disponibles. La compatibilidad física debe confirmarse con el teléfono elegido; las políticas del navegador y el hardware pueden variar.
+
+## Otras publicaciones posibles
+
+Si posteriormente prefieres Netlify o Vercel, publica el mismo contenido como sitio estático, sin compilación ni instalación. La carpeta publicada debe contener `index.html`, `assets/` y `vendor/`. No cambies las rutas relativas. Copia la nueva URL HTTPS al generador QR.
+
+## Referencias técnicas
+
+- [AR.js: documentación, requisitos y versiones compatibles](https://ar-js-org.github.io/AR.js-Docs/).
+- [AR.js: eventos y controles DOM](https://ar-js-org.github.io/AR.js-Docs/ui-events/).
+- [A-Frame](https://aframe.io/).
+- [QR Code Generator de Kazuhiko Arase](https://github.com/kazuhikoarase/qrcode-generator).
+
+Las licencias de terceros se conservan en `vendor/`. No hay analítica, servicios publicitarios ni solicitudes de ubicación o micrófono.
