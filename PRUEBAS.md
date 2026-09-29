@@ -13,8 +13,8 @@ Verificado en este entorno el 29 de septiembre de 2026. Se probó el proyecto lo
 - Permiso de cámara denegado/sin dispositivo: aparece la ayuda y se puede regresar al inicio.
 - **Tracking real con ARToolkit:** navegador Edge/Chromium en una sesión de prueba, con entrada de webcam sintética que contiene el marcador Hiro. El reconocimiento no se reemplazó por eventos artificiales.
 - Carga del archivo `motor-m01.glb` durante el seguimiento: geometría con profundidad en tres ejes, diez colores de materiales y vista SVG de respaldo oculta cuando el 3D carga bien.
-- El mismo GLB carga en la portada y en el ensayo sin cámara sin activar la cámara; los hotspots del ensayo quedan colocados sobre las piezas y se conservan los cinco pasos.
-- El ensayo gira el motor automáticamente cuando está inactivo; un arrastre horizontal lo rota manualmente y desplaza los hotspots con las piezas. El giro se detiene al iniciar los pasos y vuelve al regresar a la inspección.
+- El mismo GLB carga en la portada y en el ensayo sin cámara sin activar la cámara; cada vista tiene su propia escena y se conservan los cinco pasos.
+- Solo el motor del ensayo gira automáticamente o por arrastre. Se compararon las posiciones de los tres botones, el indicador de riesgo y el panel de seguridad antes y después del giro: permanecen fijos. La vista del ensayo tiene un único lienzo de renderizado; las capturas confirman que cambia el ángulo del motor. El giro se detiene al iniciar los pasos y vuelve al regresar a la inspección.
 - Se eliminó la tarjeta flotante que podía cubrir el motor sobre Hiro y se sustituyó la placa rectangular de la base por dos rieles abiertos.
 - Captura visual en viewport móvil de 390 × 844 píxeles: carcasa azul, rodamiento naranja, conexión amarilla y eje metálico distinguibles sobre el marcador.
 - Detección inicial, selección del hotspot de rodamiento, activación de geometría de riesgo, pérdida del marcador, ocultamiento de elementos anclados y recuperación posterior.

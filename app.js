@@ -20,7 +20,7 @@
   let phase = 'home', demo = false, tracked = false, detected = false;
   let step = 0, risk = false, scene = null, stream = null, session = 0;
   let cameraTimer, lostTimer, wakeLock;
-  let scriptsPromise, aframePromise, showcaseScene, showcaseReady = false;
+  let scriptsPromise, aframePromise, homeScene, showcaseScene, showcaseReady = false;
   let showcaseYaw = -Math.PI / 10, showcaseFrame = 0, lastSpinTime = 0, lastDragAt = -Infinity, drag = null;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const show = (id, visible) => { $(id).hidden = !visible; };
@@ -132,9 +132,9 @@
   }
 
   function moveShowcase(toDemo) {
-    if (!showcaseScene) return;
-    const host = $(toDemo ? 'showcase-demo' : 'showcase-home');
-    if (showcaseScene.parentElement !== host) host.append(showcaseScene);
+    if (!toDemo || !window.AFRAME) return;
+    homeScene?.pause();
+    if (!showcaseScene) mountDemoShowcase();
     showcaseScene.play();
     requestAnimationFrame(() => {
       showcaseScene.resize();
@@ -149,7 +149,6 @@
       const delta = lastSpinTime ? Math.min(now - lastSpinTime, 50) : 0;
       if (!drag && !reduceMotion && now - lastDragAt > 5000) showcaseYaw += delta * 0.00018;
       model.rotation.y = showcaseYaw;
-      placeDemoAnchors();
     }
     lastSpinTime = now;
     showcaseFrame = requestAnimationFrame(spinShowcase);
@@ -168,19 +167,37 @@
     $('showcase-demo').classList.remove('dragging');
   }
 
-  function mountShowcase() {
-    if (showcaseScene || !window.AFRAME) return;
-    $('showcase-home').innerHTML = `
-      <a-scene id="showcase-scene" embedded vr-mode-ui="enabled: false"
+  function showcaseMarkup(prefix) {
+    return `
+      <a-scene id="${prefix}-scene" embedded vr-mode-ui="enabled: false"
         device-orientation-permission-ui="enabled: false" loading-screen="enabled: false"
         renderer="alpha: true; antialias: true; precision: medium">
-        <a-assets timeout="10000"><a-asset-item id="showcase-glb" src="assets/motor-m01.glb"></a-asset-item></a-assets>
-        <a-entity id="showcase-motor" gltf-model="#showcase-glb" rotation="0 -18 0"></a-entity>
+        <a-assets timeout="10000"><a-asset-item id="${prefix}-glb" src="assets/motor-m01.glb"></a-asset-item></a-assets>
+        <a-entity id="${prefix}-motor" gltf-model="#${prefix}-glb" rotation="0 -18 0"
+          scale="${prefix === 'showcase' ? '0.74 0.74 0.74' : '1 1 1'}" position="0 ${prefix === 'showcase' ? '0.10' : '0'} 0"></a-entity>
         <a-light type="ambient" intensity="1.15" color="#ffffff"></a-light>
         <a-light type="directional" intensity="0.85" color="#ffffff" position="-1 2 2"></a-light>
         <a-entity camera="fov: 50" position="0 1.15 1.65" rotation="-25 0 0"
           look-controls="enabled: false" wasd-controls="enabled: false"></a-entity>
       </a-scene>`;
+  }
+
+  function mountShowcase() {
+    if (homeScene || !window.AFRAME) return;
+    $('showcase-home').innerHTML = showcaseMarkup('home');
+    homeScene = $('home-scene');
+    $('home-motor').addEventListener('model-loaded', () => show('showcase-fallback', false));
+    homeScene.addEventListener('loaded', () => {
+      homeScene.renderer?.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+      if (phase !== 'home') homeScene.pause();
+    });
+    if (demo || phase === 'complete') moveShowcase(true);
+  }
+
+  function mountDemoShowcase() {
+    // Each view owns its scene: moving an initialized A-Frame scene can leave
+    // a stale canvas visible while a different canvas receives the rotation.
+    $('showcase-demo').innerHTML = showcaseMarkup('showcase');
     showcaseScene = $('showcase-scene');
     showcaseScene.addEventListener('pointerdown', event => {
       if (!demo || phase !== 'inspect' || !showcaseReady || event.button !== 0) return;
@@ -194,7 +211,6 @@
       if (!drag || event.pointerId !== drag.id) return;
       showcaseYaw = drag.yaw + (event.clientX - drag.x) * 0.012;
       $('showcase-motor').object3D.rotation.y = showcaseYaw;
-      placeDemoAnchors();
       event.preventDefault();
     });
     const finishDrag = event => {
@@ -207,16 +223,14 @@
     showcaseScene.addEventListener('pointercancel', finishDrag);
     $('showcase-motor').addEventListener('model-loaded', () => {
       showcaseReady = true;
-      show('showcase-fallback', false);
       show('demo-fallback', false);
       if (demo) placeDemoAnchors();
     });
     showcaseScene.addEventListener('loaded', () => {
       showcaseScene.renderer?.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
-      if (demo || phase === 'complete') moveShowcase(true);
-      else if (phase !== 'home') showcaseScene.pause();
+      showcaseScene.resize();
+      if (demo) placeDemoAnchors();
     });
-    if (demo || phase === 'complete') moveShowcase(true);
   }
 
   function mountScene() {
@@ -285,6 +299,7 @@
       startShowcaseSpin();
       return;
     }
+    homeScene?.pause();
     showcaseScene?.pause();
     if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) {
       fail('La cámara necesita una conexión segura', 'Abre el sitio publicado con HTTPS, por ejemplo desde GitHub Pages. Para ensayar en este computador usa http://localhost:8080. Un archivo abierto con doble clic o una dirección HTTP de la red local no permite esta experiencia.');
@@ -421,41 +436,12 @@
 
   function placeDemoAnchors() {
     if (!demo || phase !== 'inspect') return;
-    const model = $('showcase-motor')?.object3D;
-    const camera = showcaseScene?.camera;
-    const canvas = showcaseScene?.renderer?.domElement;
-    if (showcaseReady && model && camera && canvas && showcaseScene.parentElement === $('showcase-demo')) {
-      const rect = canvas.getBoundingClientRect();
-      showcaseScene.object3D.updateMatrixWorld(true);
-      // A-Frame keeps the active camera separate from its entity transform.
-      // Synchronize that transform before projecting HTML hotspots.
-      camera.matrixWorld.copy(camera.el.object3D.matrixWorld);
-      camera.matrixWorldInverse.copy(camera.matrixWorld).invert();
-      const points = [
-        ['anchor-motor', -.23, .55, .27],
-        ['anchor-bearing', .40, .47, .18],
-        ['anchor-electrical', -.13, .85, .05],
-        ['demo-risk', .40, .47, .18]
-      ];
-      for (const [id, x, y, z] of points) {
-        const point = new AFRAME.THREE.Vector3(x, y, z);
-        model.localToWorld(point);
-        point.project(camera);
-        $(id).style.left = `${rect.left + (point.x + 1) * rect.width / 2}px`;
-        $(id).style.top = `${rect.top + (1 - point.y) * rect.height / 2}px`;
-        $(id).style.visibility = point.z > -1 && point.z < 1 ? 'visible' : 'hidden';
-      }
-      return;
-    }
-    const img = $('demo-background').querySelector('img');
-    const box = img.getBoundingClientRect();
-    const scale = Math.min(box.width / 760, box.height / 440);
-    const width = 760 * scale, height = 440 * scale;
-    const left = box.left + (box.width-width)/2, top = box.top + (box.height-height)/2;
-    const points = [['anchor-motor',295,235],['anchor-bearing',514,238],['anchor-electrical',369,113],['demo-risk',514,238]];
+    // Rehearsal controls belong to the screen, independently of motor rotation.
+    const box = $('showcase-demo').getBoundingClientRect();
+    const points = [['anchor-motor',.29,.45],['anchor-bearing',.74,.53],['anchor-electrical',.40,.22],['demo-risk',.74,.53]];
     for (const [id, x, y] of points) {
-      $(id).style.left = `${left+x*scale}px`;
-      $(id).style.top = `${top+y*scale}px`;
+      $(id).style.left = `${box.left+x*box.width}px`;
+      $(id).style.top = `${box.top+y*box.height}px`;
       $(id).style.visibility = 'visible';
     }
   }
