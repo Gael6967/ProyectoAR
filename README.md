@@ -89,7 +89,7 @@ El QR se genera completamente en el navegador, sin enviar la URL a servicios de 
 | 60–90 s | Inicia el procedimiento. Recorre los cinco pasos con **Siguiente**, registra el resultado y completa. |
 | 90–100 s | Muestra **Inspección completada** y explica que los datos son simulados. Pulsa **Finalizar**. |
 
-Ensaya una vez en el mismo celular, navegador y red que usarás en clase. El modo **Ensayar sin cámara** permite practicar las interacciones y sirve como apoyo si el dispositivo no puede usar la cámara; está rotulado como ensayo y no representa reconocimiento real.
+Ensaya una vez en el mismo celular, navegador y red que usarás en clase. En **Ensayar sin cámara**, el motor 3D gira lentamente; arrástralo con el dedo o el mouse para elegir el ángulo. El giro se pausa unos segundos después de manipularlo y durante el procedimiento. Los hotspots siguen las piezas. El modo sirve para practicar las interacciones si el dispositivo no puede usar la cámara; está rotulado como ensayo y no representa reconocimiento real.
 
 ## Funciones incluidas
 

@@ -21,11 +21,14 @@
   let step = 0, risk = false, scene = null, stream = null, session = 0;
   let cameraTimer, lostTimer, wakeLock;
   let scriptsPromise, aframePromise, showcaseScene, showcaseReady = false;
+  let showcaseYaw = -Math.PI / 10, showcaseFrame = 0, lastSpinTime = 0, lastDragAt = -Infinity, drag = null;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const show = (id, visible) => { $(id).hidden = !visible; };
 
   function selectPart(key) {
     const part = parts[key];
     if (!part) return;
+    if (demo && phase === 'inspect') lastDragAt = performance.now();
     $('part-name').textContent = part.name;
     $('part-status').textContent = part.status;
     $('part-status').className = `detail-status ${part.color}`;
@@ -139,6 +142,32 @@
     });
   }
 
+  function spinShowcase(now) {
+    if (!demo || phase !== 'inspect') { showcaseFrame = 0; return; }
+    const model = $('showcase-motor')?.object3D;
+    if (showcaseReady && model) {
+      const delta = lastSpinTime ? Math.min(now - lastSpinTime, 50) : 0;
+      if (!drag && !reduceMotion && now - lastDragAt > 5000) showcaseYaw += delta * 0.00018;
+      model.rotation.y = showcaseYaw;
+      placeDemoAnchors();
+    }
+    lastSpinTime = now;
+    showcaseFrame = requestAnimationFrame(spinShowcase);
+  }
+
+  function startShowcaseSpin() {
+    if (showcaseFrame) return;
+    lastSpinTime = 0;
+    showcaseFrame = requestAnimationFrame(spinShowcase);
+  }
+
+  function stopShowcaseSpin() {
+    if (showcaseFrame) cancelAnimationFrame(showcaseFrame);
+    showcaseFrame = 0;
+    drag = null;
+    $('showcase-demo').classList.remove('dragging');
+  }
+
   function mountShowcase() {
     if (showcaseScene || !window.AFRAME) return;
     $('showcase-home').innerHTML = `
@@ -153,6 +182,29 @@
           look-controls="enabled: false" wasd-controls="enabled: false"></a-entity>
       </a-scene>`;
     showcaseScene = $('showcase-scene');
+    showcaseScene.addEventListener('pointerdown', event => {
+      if (!demo || phase !== 'inspect' || !showcaseReady || event.button !== 0) return;
+      drag = {id:event.pointerId, x:event.clientX, yaw:showcaseYaw};
+      lastDragAt = performance.now();
+      event.target.setPointerCapture?.(event.pointerId);
+      $('showcase-demo').classList.add('dragging');
+      event.preventDefault();
+    });
+    showcaseScene.addEventListener('pointermove', event => {
+      if (!drag || event.pointerId !== drag.id) return;
+      showcaseYaw = drag.yaw + (event.clientX - drag.x) * 0.012;
+      $('showcase-motor').object3D.rotation.y = showcaseYaw;
+      placeDemoAnchors();
+      event.preventDefault();
+    });
+    const finishDrag = event => {
+      if (!drag || event.pointerId !== drag.id) return;
+      drag = null;
+      lastDragAt = performance.now();
+      $('showcase-demo').classList.remove('dragging');
+    };
+    showcaseScene.addEventListener('pointerup', finishDrag);
+    showcaseScene.addEventListener('pointercancel', finishDrag);
     $('showcase-motor').addEventListener('model-loaded', () => {
       showcaseReady = true;
       show('showcase-fallback', false);
@@ -229,6 +281,8 @@
       moveShowcase(true);
       phase = 'scan';
       setTracking(true);
+      show('demo-rotate-hint', true);
+      startShowcaseSpin();
       return;
     }
     showcaseScene?.pause();
@@ -302,6 +356,7 @@
   function exit() {
     ++session;
     phase = 'home';
+    stopShowcaseSpin();
     stopCamera();
     // Full navigation tears down AR.js listeners and any pending camera request.
     // This also makes subsequent inspections start with a clean tracker.
@@ -335,12 +390,14 @@
   function startProcedure() {
     if (!detected) return;
     phase = 'procedure'; step = 0;
+    stopShowcaseSpin(); show('demo-rotate-hint', false);
     show('inspection-panel', false); show('anchors', false); show('tracking-guide', false);
     show('procedure-panel', true);
     renderStep();
   }
   function complete() {
     phase = 'complete';
+    stopShowcaseSpin(); show('demo-rotate-hint', false);
     stopCamera();
     show('scene-container', false);
     show('demo-background', true);
@@ -414,7 +471,7 @@
   $('step-next').addEventListener('click', () => { if (step < 4) { step++; renderStep(); } else complete(); });
   $('step-back').addEventListener('click', () => {
     if (step > 0) { step--; renderStep(); }
-    else { phase = 'inspect'; show('procedure-panel', false); show('inspection-panel', true); show('anchors', tracked); if (demo) placeDemoAnchors(); }
+    else { phase = 'inspect'; show('procedure-panel', false); show('inspection-panel', true); show('anchors', tracked); if (demo) { show('demo-rotate-hint', true); placeDemoAnchors(); startShowcaseSpin(); } }
   });
   $('resume-video').addEventListener('click', () => { const video = document.getElementById('arjs-video'); video?.play().then(() => show('resume-video', false)).catch(() => fail('El video está pausado', 'Reinicia la inspección y acepta el permiso de cámara.')); });
   $('retry').addEventListener('click', () => { stopCamera(); location.replace(new URL('?start=1', location.href).href); });
