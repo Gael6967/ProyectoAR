@@ -20,6 +20,7 @@ Verificado en este entorno el 29 de septiembre de 2026. Se probó el proyecto lo
 - Publicación correcta mediante GitHub Pages en `https://gael6967.github.io/ProyectoAR/`, desde la rama `main` y carpeta raíz, con HTTPS.
 - Comprobación de los 23 archivos públicos iniciales (sin los dos archivos ocultos de configuración): sus huellas SHA-256 coinciden con las copias locales.
 - Repetición satisfactoria del recorrido AR desde la URL pública con cámara sintética, incluyendo pérdida y recuperación del marcador y cierre de la cámara.
+- Tras agregar el motor 3D, los **28 archivos públicos** coincidieron byte a byte con el proyecto local mediante SHA-256. El recorrido AR completo volvió a superar la prueba desde GitHub Pages y el GLB cargó con volumen y diez colores; sin errores JavaScript ni HTTP.
 - Lectura independiente del PNG QR con jsQR: codifica exactamente `https://gael6967.github.io/ProyectoAR/`.
 
 ## Verificación pendiente en el lugar de presentación
