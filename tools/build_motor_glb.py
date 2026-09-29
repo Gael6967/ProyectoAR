@@ -80,8 +80,9 @@ def cylinder_x(name, x, y, z, length, radius, segments=SEGMENTS):
                     (right, y + radius * a[0], z + radius * a[1]), (right, y, z)], (1, 0, 0))
 
 
-# Steel mounting skid with two supports and four feet.
-box("base_grafito", 0.04, 0.035, 0, 1.34, 0.07, 0.70)
+# Open steel mounting rails; a solid rectangular plate hid the motor in AR.
+for z in (-0.26, 0.26):
+    box("base_grafito", 0.04, 0.035, z, 1.34, 0.07, 0.10)
 for x in (-0.33, 0.29):
     for z in (-0.24, 0.24):
         box("detalles_acero", x, 0.11, z, 0.18, 0.16, 0.15)
