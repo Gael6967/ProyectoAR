@@ -25,7 +25,7 @@
       </div>
       <div class="equipment-preview">
         <div class="preview-heading"><span>EQUIPO / M-01</span><span class="badge warning">⚠ ADVERTENCIA</span></div>
-        <div class="motor-visual"><div class="crosshair top-left"></div><div class="crosshair bottom-right"></div><img src="assets/motor.svg" alt="Diagrama técnico de un motor eléctrico, con rodamiento delantero y conexión eléctrica" width="760" height="440"><span class="visual-label">MOTOR ELÉCTRICO M-01</span><span class="diagram-note">VISTA ESQUEMÁTICA</span></div>
+        <div class="motor-visual"><div class="crosshair top-left"></div><div class="crosshair bottom-right"></div><div id="showcase-home" class="showcase-host" aria-hidden="true"></div><img id="showcase-fallback" src="assets/motor.svg" alt="Diagrama técnico de un motor eléctrico, con rodamiento delantero y conexión eléctrica" width="760" height="440"><span class="visual-label">MOTOR ELÉCTRICO M-01</span><span class="diagram-note">MODELO 3D</span></div>
         <div class="preview-metrics"><div><span>TEMPERATURA</span><strong>82<small> °C</small></strong><i class="spark temperature"></i></div><div><span>VIBRACIÓN</span><strong>7.2<small> mm/s</small></strong><i class="spark vibration"></i></div><div><span>OPERACIÓN</span><strong>3.842<small> h</small></strong><span class="metric-note">Datos simulados</span></div></div>
         <div class="preview-footer"><span class="signal-bars" aria-hidden="true">▂▄▆</span> TELEMETRÍA SIMULADA <span>ÚLT. MANT. 12/09/2026</span></div>
       </div>
@@ -36,12 +36,11 @@
 
   <section id="experience" class="experience" hidden aria-label="Inspección del equipo">
     <div id="scene-container" aria-hidden="true"></div>
-    <div id="demo-background" hidden><div class="demo-grid"></div><img src="assets/motor.svg" alt="Motor de demostración"></div>
+    <div id="demo-background" hidden><div class="demo-grid"></div><div id="showcase-demo" class="showcase-host" aria-hidden="true"></div><img id="demo-fallback" src="assets/motor.svg" alt="Motor de demostración"></div>
     <div class="experience-top"><a class="mini-brand" href="./">[ AR ] <span>MAINTENANCE</span></a><button class="icon-button" id="exit" aria-label="Salir de la inspección">✕</button></div>
     <div class="session-status"><span id="tracking-status" class="tracking-status">Preparando cámara…</span><span class="simulation-label" id="simulation-label">DATOS SIMULADOS</span></div>
     <div id="tracking-guide" class="tracking-guide"><div class="viewfinder"><i></i><i></i><i></i><i></i><img src="assets/hiro.png" alt="Marcador Hiro que debes encuadrar"></div><h2 id="guide-title">Autoriza el uso de la cámara</h2><p id="guide-text">La cámara se utiliza para reconocer el marcador. Las imágenes no se envían a un servidor.</p><button class="button secondary" id="resume-video" hidden>ACTIVAR VIDEO</button></div>
     <div id="anchors" hidden>
-      <div id="floating-card" class="floating-card"><span class="floating-id">M-01 / EQUIPO DETECTADO</span><strong>Motor Eléctrico M-01</strong><span class="badge warning">⚠ Advertencia</span><p><b>82 °C</b> Temperatura <span>·</span> <b>7.2 mm/s</b> Vibración</p></div>
       <button class="hotspot" data-part="motor" id="anchor-motor" aria-label="1. Motor"><span>1</span><b>Motor</b></button>
       <button class="hotspot danger" data-part="bearing" id="anchor-bearing" aria-label="2. Rodamiento"><span>2</span><b>Rodamiento</b></button>
       <button class="hotspot" data-part="electrical" id="anchor-electrical" aria-label="3. Conexión eléctrica"><span>3</span><b>Conexión eléctrica</b></button>

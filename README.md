@@ -95,7 +95,7 @@ Ensaya una vez en el mismo celular, navegador y red que usarás en clase. El mod
 
 - Inicio voluntario de la cámara, solicitud de permiso y mensajes para errores de acceso.
 - Reconocimiento real de marcador, ocultamiento al perderlo y recuperación al volver a verlo.
-- Modelo 3D ligero en AR: carcasa azul, rodamiento naranja, conexión amarilla, eje de acero y base grafito. Tres hotspots táctiles, con botones equivalentes en el panel inferior.
+- El mismo modelo 3D ligero aparece en la portada, en **Ensayar sin cámara** y sobre el marcador Hiro en AR: carcasa azul, rodamiento naranja, conexión amarilla, eje de acero y dos rieles grafito. Tres hotspots táctiles, con botones equivalentes en el panel inferior.
 - Datos: Motor Eléctrico M-01, Advertencia, 82 °C, 7.2 mm/s, 3.842 h y 12/09/2026.
 - Rodamiento en riesgo y zona resaltada en rojo con advertencia por equipo energizado.
 - Procedimiento de cinco pasos, navegación hacia atrás y registro local del resultado.
@@ -145,7 +145,7 @@ PRUEBAS.md                 Verificación y límites
 README.md                  Esta guía
 ```
 
-El modelo `.glb` tiene cerca de 100 KB, 1.680 triángulos y diez materiales identificados por componente. El SVG coloreado queda como vista de respaldo si falla la carga del 3D. Para cambiar colores o geometría, edita `COLORS` o las formas en `tools/build_motor_glb.py` y ejecútalo con `python tools/build_motor_glb.py` (o `py tools/build_motor_glb.py`) desde la raíz del proyecto; después vuelve a publicar `assets/motor-m01.glb`.
+El modelo `.glb` tiene cerca de 100 KB, 1.692 triángulos y diez materiales identificados por componente. Su base abierta de dos rieles deja visible el motor; la información de inspección queda en el panel inferior para no taparlo. El SVG coloreado queda como vista de respaldo si falla la carga del 3D. Para cambiar colores o geometría, edita `COLORS` o las formas en `tools/build_motor_glb.py` y ejecútalo con `python tools/build_motor_glb.py` (o `py tools/build_motor_glb.py`) desde la raíz del proyecto; después vuelve a publicar `assets/motor-m01.glb`.
 
 ## Resolver problemas
 

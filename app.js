@@ -20,7 +20,7 @@
   let phase = 'home', demo = false, tracked = false, detected = false;
   let step = 0, risk = false, scene = null, stream = null, session = 0;
   let cameraTimer, lostTimer, wakeLock;
-  let scriptsPromise;
+  let scriptsPromise, aframePromise, showcaseScene, showcaseReady = false;
   const show = (id, visible) => { $(id).hidden = !visible; };
 
   function selectPart(key) {
@@ -71,9 +71,14 @@
     });
   }
 
+  function loadAFrame() {
+    if (!aframePromise) aframePromise = script('vendor/aframe-1.6.0.min.js');
+    return aframePromise;
+  }
+
   async function loadAR() {
     if (!scriptsPromise) scriptsPromise = (async () => {
-      await script('vendor/aframe-1.6.0.min.js');
+      await loadAFrame();
       await script('vendor/aframe-ar-3.4.7.js');
       // Project marker-local coordinates into the same viewport as the AR renderer.
       // Rich HTML stays readable while its anchor follows the tracked marker pose.
@@ -81,7 +86,6 @@
         init() {
           this.vector = new AFRAME.THREE.Vector3();
           this.targets = [
-            ['floating-card', 0, .05, -.86],
             ['anchor-motor', -.23, .63, .10],
             ['anchor-bearing', .40, .59, .08],
             ['anchor-electrical', -.13, .88, -.03]
@@ -115,13 +119,6 @@
             if (!visible) continue;
             let x = rect.left + (this.vector.x + 1) * rect.width / 2;
             let y = rect.top + (1 - this.vector.y) * rect.height / 2;
-            // Keep the information card readable near screen edges. The three
-            // component hotspots stay at their exact projected marker positions.
-            if (target.element.id === 'floating-card') {
-              const halfWidth = target.element.offsetWidth / 2;
-              x = Math.max(halfWidth + 12, Math.min(innerWidth - halfWidth - 12, x));
-              y = Math.max(target.element.offsetHeight + 118, y);
-            }
             target.element.style.left = `${x}px`;
             target.element.style.top = `${y}px`;
           }
@@ -129,6 +126,45 @@
       });
     })();
     return scriptsPromise;
+  }
+
+  function moveShowcase(toDemo) {
+    if (!showcaseScene) return;
+    const host = $(toDemo ? 'showcase-demo' : 'showcase-home');
+    if (showcaseScene.parentElement !== host) host.append(showcaseScene);
+    showcaseScene.play();
+    requestAnimationFrame(() => {
+      showcaseScene.resize();
+      if (toDemo) placeDemoAnchors();
+    });
+  }
+
+  function mountShowcase() {
+    if (showcaseScene || !window.AFRAME) return;
+    $('showcase-home').innerHTML = `
+      <a-scene id="showcase-scene" embedded vr-mode-ui="enabled: false"
+        device-orientation-permission-ui="enabled: false" loading-screen="enabled: false"
+        renderer="alpha: true; antialias: true; precision: medium">
+        <a-assets timeout="10000"><a-asset-item id="showcase-glb" src="assets/motor-m01.glb"></a-asset-item></a-assets>
+        <a-entity id="showcase-motor" gltf-model="#showcase-glb" rotation="0 -18 0"></a-entity>
+        <a-light type="ambient" intensity="1.15" color="#ffffff"></a-light>
+        <a-light type="directional" intensity="0.85" color="#ffffff" position="-1 2 2"></a-light>
+        <a-entity camera="fov: 50" position="0 1.15 1.65" rotation="-25 0 0"
+          look-controls="enabled: false" wasd-controls="enabled: false"></a-entity>
+      </a-scene>`;
+    showcaseScene = $('showcase-scene');
+    $('showcase-motor').addEventListener('model-loaded', () => {
+      showcaseReady = true;
+      show('showcase-fallback', false);
+      show('demo-fallback', false);
+      if (demo) placeDemoAnchors();
+    });
+    showcaseScene.addEventListener('loaded', () => {
+      showcaseScene.renderer?.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+      if (demo || phase === 'complete') moveShowcase(true);
+      else if (phase !== 'home') showcaseScene.pause();
+    });
+    if (demo || phase === 'complete') moveShowcase(true);
   }
 
   function mountScene() {
@@ -190,10 +226,12 @@
     $('simulation-label').textContent = demo ? 'ENSAYO · DATOS SIMULADOS' : 'DATOS SIMULADOS';
     show('demo-background', demo);
     if (demo) {
+      moveShowcase(true);
       phase = 'scan';
       setTracking(true);
       return;
     }
+    showcaseScene?.pause();
     if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) {
       fail('La cámara necesita una conexión segura', 'Abre el sitio publicado con HTTPS, por ejemplo desde GitHub Pages. Para ensayar en este computador usa http://localhost:8080. Un archivo abierto con doble clic o una dirección HTTP de la red local no permite esta experiencia.');
       return;
@@ -306,6 +344,7 @@
     stopCamera();
     show('scene-container', false);
     show('demo-background', true);
+    moveShowcase(true);
     const video = document.getElementById('arjs-video');
     if (video) video.hidden = true;
     show('procedure-panel', false); show('anchors', false); show('lost-notice', false);
@@ -325,6 +364,32 @@
 
   function placeDemoAnchors() {
     if (!demo || phase !== 'inspect') return;
+    const model = $('showcase-motor')?.object3D;
+    const camera = showcaseScene?.camera;
+    const canvas = showcaseScene?.renderer?.domElement;
+    if (showcaseReady && model && camera && canvas && showcaseScene.parentElement === $('showcase-demo')) {
+      const rect = canvas.getBoundingClientRect();
+      showcaseScene.object3D.updateMatrixWorld(true);
+      // A-Frame keeps the active camera separate from its entity transform.
+      // Synchronize that transform before projecting HTML hotspots.
+      camera.matrixWorld.copy(camera.el.object3D.matrixWorld);
+      camera.matrixWorldInverse.copy(camera.matrixWorld).invert();
+      const points = [
+        ['anchor-motor', -.23, .55, .27],
+        ['anchor-bearing', .40, .47, .18],
+        ['anchor-electrical', -.13, .85, .05],
+        ['demo-risk', .40, .47, .18]
+      ];
+      for (const [id, x, y, z] of points) {
+        const point = new AFRAME.THREE.Vector3(x, y, z);
+        model.localToWorld(point);
+        point.project(camera);
+        $(id).style.left = `${rect.left + (point.x + 1) * rect.width / 2}px`;
+        $(id).style.top = `${rect.top + (1 - point.y) * rect.height / 2}px`;
+        $(id).style.visibility = point.z > -1 && point.z < 1 ? 'visible' : 'hidden';
+      }
+      return;
+    }
     const img = $('demo-background').querySelector('img');
     const box = img.getBoundingClientRect();
     const scale = Math.min(box.width / 760, box.height / 440);
@@ -336,8 +401,6 @@
       $(id).style.top = `${top+y*scale}px`;
       $(id).style.visibility = 'visible';
     }
-    $('floating-card').style.left = `${Math.max(130, Math.min(innerWidth-130, left+380*scale))}px`;
-    $('floating-card').style.top = `${Math.max(222, top+40*scale)}px`;
   }
   window.addEventListener('resize', () => requestAnimationFrame(placeDemoAnchors));
 
@@ -361,6 +424,7 @@
   $('about-open').addEventListener('click', () => $('about-dialog').showModal());
   $('about-close').addEventListener('click', () => $('about-dialog').close());
   selectPart('motor');
+  loadAFrame().then(mountShowcase).catch(() => { /* The SVG remains visible as a fallback. */ });
   const params = new URLSearchParams(location.search);
   if (params.has('demo')) start(true);
   else if (params.has('start')) start(false);
