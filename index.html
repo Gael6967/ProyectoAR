@@ -41,6 +41,11 @@
     <div class="session-status"><span id="tracking-status" class="tracking-status">Preparando cámara…</span><span class="simulation-label" id="simulation-label">DATOS SIMULADOS</span></div>
     <div id="tracking-guide" class="tracking-guide"><div class="viewfinder"><i></i><i></i><i></i><i></i><img src="assets/hiro.png" alt="Marcador Hiro que debes encuadrar"></div><h2 id="guide-title">Autoriza el uso de la cámara</h2><p id="guide-text">La cámara se utiliza para reconocer el marcador. Las imágenes no se envían a un servidor.</p><button class="button secondary" id="resume-video" hidden>ACTIVAR VIDEO</button></div>
     <div id="anchors" hidden>
+      <svg id="component-leaders" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+        <g id="leader-motor"><line/><circle r="5"/></g>
+        <g id="leader-bearing"><line/><circle r="5"/></g>
+        <g id="leader-electrical"><line/><circle r="5"/></g>
+      </svg>
       <button class="hotspot" data-part="motor" id="anchor-motor" aria-label="1. Motor"><span>1</span><b>Motor</b></button>
       <button class="hotspot danger" data-part="bearing" id="anchor-bearing" aria-label="2. Rodamiento"><span>2</span><b>Rodamiento</b></button>
       <button class="hotspot" data-part="electrical" id="anchor-electrical" aria-label="3. Conexión eléctrica"><span>3</span><b>Conexión eléctrica</b></button>

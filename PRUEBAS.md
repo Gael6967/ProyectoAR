@@ -34,3 +34,9 @@ Verificado en este entorno el 29 de septiembre de 2026. Se probó el proyecto lo
 - Hacer un ensayo de aproximadamente 100 segundos en la red de la presentación.
 
 No se ha validado físicamente un iPhone ni un teléfono Android en este entorno. El modo de ensayo no debe presentarse como seguimiento por cámara.
+
+## Actualización de señalización (30/09/2026)
+- Líneas y puntos conectados a coordenadas del GLB en ambos modos; no capturan los gestos de arrastre.
+- Panel de inspección con texto de 16 px y acciones de al menos 58 px de altura; probado en 390×844, 320×568 y 844×390.
+- Escala AR aumentada de 0.62 a 0.78 (aproximadamente 26 %).
+- Repetición del recorrido completo del ensayo, estabilidad de los controles durante el giro y reconocimiento real mediante webcam sintética.

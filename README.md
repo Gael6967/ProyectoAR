@@ -177,3 +177,6 @@ Si posteriormente prefieres Netlify o Vercel, publica el mismo contenido como si
 - [QR Code Generator de Kazuhiko Arase](https://github.com/kazuhikoarase/qrcode-generator).
 
 Las licencias de terceros se conservan en `vendor/`. No hay analítica, servicios publicitarios ni solicitudes de ubicación o micrófono.
+
+## Señalización y legibilidad (30/09/2026)
+Los botones 1, 2 y 3 tienen líneas de color y puntos sobre la carcasa azul, el rodamiento naranja y la conexión amarilla. En el ensayo los botones permanecen fijos; los extremos de las líneas siguen las piezas cuando gira el modelo. En AR las referencias siguen la posición del marcador. El motor AR es un 26 % más grande que la versión anterior; aleja un poco el teléfono si queda fuera del encuadre. El panel inferior tiene textos y controles ampliados, con desplazamiento vertical en pantallas pequeñas.

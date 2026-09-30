@@ -11,3 +11,20 @@ body.in-session{overflow:hidden;background:transparent}.experience{position:fixe
 .part-tabs button[data-part="motor"]{border-bottom:2px solid #5b9ee8}.part-tabs button[data-part="bearing"]{border-bottom:2px solid #ff8a24}.part-tabs button[data-part="electrical"]{border-bottom:2px solid #f3c64c}
 /* The landing preview and camera-free rehearsal display the same GLB in separate scenes. */
 .motor-visual .showcase-host{position:absolute;inset:0;z-index:1}.motor-visual .crosshair,.motor-visual .visual-label,.motor-visual .diagram-note{z-index:2;pointer-events:none}.showcase-host a-scene{position:absolute!important;inset:0;width:100%!important;height:100%!important;background:transparent!important}.showcase-host .a-canvas{pointer-events:none}#showcase-fallback[hidden],#demo-fallback[hidden]{display:none!important}#demo-background #showcase-demo{position:absolute;top:17%;left:50%;transform:translateX(-50%);width:min(760px,100vw);height:48%;pointer-events:auto;touch-action:none;cursor:grab}#demo-background #showcase-demo .a-canvas{pointer-events:auto;touch-action:none}#demo-background #showcase-demo.dragging{cursor:grabbing}.demo-rotate-hint{position:absolute;top:calc(109px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:1;margin:0;padding:5px 9px;border:1px solid #cbd0d533;border-radius:16px;background:#171a20aa;color:#e4e8ec;font:11px monospace;letter-spacing:.3px;white-space:nowrap;pointer-events:none}
+/* Component callouts stay readable while their endpoints follow the 3D parts. */
+#component-leaders{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+#component-leaders g{color:#71b6ff;filter:drop-shadow(0 1px 2px #000);opacity:.8}
+#component-leaders #leader-bearing{color:#ff8a24}#component-leaders #leader-electrical{color:#f3c64c}
+#component-leaders line{stroke:currentColor;stroke-width:2;vector-effect:non-scaling-stroke}
+#component-leaders circle{fill:currentColor;stroke:#101113;stroke-width:2}
+#component-leaders g.selected{opacity:1}#component-leaders g.selected line{stroke-width:3}
+#anchor-motor>span{border-color:#71b6ff;color:#71b6ff}#anchor-motor[aria-pressed=true]>span{background:#71b6ff;color:#101113}
+.hotspot b{font-size:12px;font-weight:600}
+.inspection-panel{padding:18px;max-height:60dvh}
+.part-tabs button{font-size:15px;min-height:50px;padding:8px 5px}
+.part-detail h2{font-size:19px}.part-detail p{font-size:16px;line-height:1.45}
+.detail-status{font-size:14px}.inspection-actions .button{font-size:14px;min-height:58px;line-height:1.3;letter-spacing:.2px}
+.risk-notice strong{font-size:14px}.risk-notice p{font-size:15px;line-height:1.4}
+@media(min-width:1100px){.inspection-panel{width:480px}}
+@media(max-height:680px){.inspection-panel{padding:14px;max-height:52dvh}}
+@media(orientation:landscape) and (max-height:550px){.inspection-panel{max-height:73dvh}}

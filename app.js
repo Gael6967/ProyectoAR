@@ -4,7 +4,13 @@
 'use strict';
 (() => {
   const $ = (id) => document.getElementById(id);
-  const AR_MODEL_SCALE = 0.62;
+  const AR_MODEL_SCALE = 0.78;
+  // Coordinates belong to the GLB, shared by the two renderers.
+  const componentPoints = [
+    {key:'motor', point:[-.23,.55,.23], offset:[-72,20]},
+    {key:'bearing', point:[.42,.53,.12], offset:[72,24]},
+    {key:'electrical', point:[-.13,.825,0], offset:[0,-76]}
+  ];
   const parts = {
     motor: {name:'Motor Eléctrico M-01', status:'Advertencia', color:'warning-text', description:'Temperatura elevada: 82 °C. Se recomienda revisar la ventilación del motor.'},
     bearing: {name:'Rodamiento delantero', status:'Riesgo', color:'danger-text', description:'Vibración elevada detectada: 7.2 mm/s. Se recomienda inspección.'},
@@ -34,6 +40,35 @@
     $('part-status').className = `detail-status ${part.color}`;
     $('part-description').textContent = part.description;
     document.querySelectorAll('[data-part]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.part === key)));
+    componentPoints.forEach(part => $('leader-' + part.key).classList.toggle('selected', part.key === key));
+  }
+
+  function drawLeader(key, x, y, visible = true) {
+    const group = $('leader-' + key);
+    group.style.display = visible ? '' : 'none';
+    if (!visible) return;
+    const button = $('anchor-' + key).querySelector('span').getBoundingClientRect();
+    const fromX = button.left + button.width / 2;
+    const fromY = button.top + button.height / 2;
+    const line = group.querySelector('line');
+    for (const [name,value] of Object.entries({x1:fromX,y1:fromY,x2:x,y2:y})) line.setAttribute(name,value);
+    const dot = group.querySelector('circle');
+    dot.setAttribute('cx',x); dot.setAttribute('cy',y);
+  }
+
+  function updateDemoLeaders() {
+    const model = $('showcase-motor')?.object3D;
+    const camera = showcaseScene?.camera;
+    const canvas = showcaseScene?.renderer?.domElement;
+    if (!showcaseReady || !model || !camera || !canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    model.updateWorldMatrix(true, false);
+    camera.updateWorldMatrix(true, false);
+    for (const {key,point} of componentPoints) {
+      const vector = new AFRAME.THREE.Vector3(...point);
+      model.localToWorld(vector).project(camera);
+      drawLeader(key,rect.left+(vector.x+1)*rect.width/2,rect.top+(1-vector.y)*rect.height/2,vector.z>-1 && vector.z<1);
+    }
   }
 
   function setTracking(found) {
@@ -88,11 +123,7 @@
       AFRAME.registerComponent('maintenance-anchors', {
         init() {
           this.vector = new AFRAME.THREE.Vector3();
-          this.targets = [
-            ['anchor-motor', -.23, .63, .10],
-            ['anchor-bearing', .40, .59, .08],
-            ['anchor-electrical', -.13, .88, -.03]
-          ].map(([id, x, y, z]) => ({element:$(id), x:x*AR_MODEL_SCALE, y:y*AR_MODEL_SCALE, z:z*AR_MODEL_SCALE}));
+          this.targets = componentPoints.map(({key,point:[x,y,z],offset}) => ({key,offset,element:$('anchor-'+key),x:x*AR_MODEL_SCALE,y:y*AR_MODEL_SCALE,z:z*AR_MODEL_SCALE}));
         },
         tick() {
           // AR.js fits the video beyond the viewport in portrait mode. Give the
@@ -119,11 +150,12 @@
             this.vector.project(camera);
             const visible = this.vector.z > -1 && this.vector.z < 1;
             target.element.style.visibility = visible ? 'visible' : 'hidden';
-            if (!visible) continue;
+            if (!visible) { drawLeader(target.key,0,0,false); continue; }
             let x = rect.left + (this.vector.x + 1) * rect.width / 2;
             let y = rect.top + (1 - this.vector.y) * rect.height / 2;
-            target.element.style.left = `${x}px`;
-            target.element.style.top = `${y}px`;
+            target.element.style.left = `${Math.max(65,Math.min(innerWidth-65,x+target.offset[0]))}px`;
+            target.element.style.top = `${Math.max(155,Math.min(innerHeight-90,y+target.offset[1]))}px`;
+            drawLeader(target.key,x,y);
           }
         }
       });
@@ -149,6 +181,7 @@
       const delta = lastSpinTime ? Math.min(now - lastSpinTime, 50) : 0;
       if (!drag && !reduceMotion && now - lastDragAt > 5000) showcaseYaw += delta * 0.00018;
       model.rotation.y = showcaseYaw;
+      updateDemoLeaders();
     }
     lastSpinTime = now;
     showcaseFrame = requestAnimationFrame(spinShowcase);
@@ -438,12 +471,13 @@
     if (!demo || phase !== 'inspect') return;
     // Rehearsal controls belong to the screen, independently of motor rotation.
     const box = $('showcase-demo').getBoundingClientRect();
-    const points = [['anchor-motor',.29,.45],['anchor-bearing',.74,.53],['anchor-electrical',.40,.22],['demo-risk',.74,.53]];
+    const points = [['anchor-motor',.17,.45],['anchor-bearing',.83,.53],['anchor-electrical',.40,.10],['demo-risk',.74,.53]];
     for (const [id, x, y] of points) {
       $(id).style.left = `${box.left+x*box.width}px`;
       $(id).style.top = `${box.top+y*box.height}px`;
       $(id).style.visibility = 'visible';
     }
+    updateDemoLeaders();
   }
   window.addEventListener('resize', () => requestAnimationFrame(placeDemoAnchors));
 
