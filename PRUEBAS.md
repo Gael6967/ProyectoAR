@@ -51,3 +51,10 @@ No se ha validado físicamente un iPhone ni un teléfono Android en este entorno
 - Emulación móvil 390×844, DPR 2: ancho de layout 390, escala visual 1, cuerpo sin expansión y video completo dentro de pantalla.
 - Reconocimiento Hiro real con webcam sintética: arrastre vertical inclina el modelo, restablecimiento reinicia ambos ejes; pérdida/recuperación, controles y cinco pasos superados.
 - Recorrido sin cámara en tres tamaños superado tras ampliar el panel. Pendiente confirmar encuadre y gesto táctil con la cámara física del usuario.
+
+
+## Ajuste por ejes y panel compacto
+- Arrastre vertical con desviación horizontal: solo cambia X, conserva Y y mantiene Z en cero en ambos modos.
+- Ensayo: el ángulo manual se conserva después de 5 segundos; botones y panel fijos.
+- Recorrido AR con cámara sintética, restablecimiento, pérdida/recuperación y finalización superado.
+- Recorrido sin cámara en tres tamaños y revisión visual móvil del panel compacto superados.

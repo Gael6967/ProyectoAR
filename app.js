@@ -29,8 +29,22 @@
   let scriptsPromise, aframePromise, homeScene, showcaseScene, showcaseReady = false;
   let showcaseYaw = -Math.PI / 10, showcaseFrame = 0, lastSpinTime = 0, lastDragAt = -Infinity, drag = null;
   let arYaw = 0, arPitch = 0, arDrag = null;
+  let showcasePitch = 0, showcaseManuallyAdjusted = false;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const show = (id, visible) => { $(id).hidden = !visible; };
+
+  // Lock each gesture to its dominant axis, so diagonal finger drift cannot
+  // change both angles. Z stays zero; marker tracking remains independent.
+  function rotationGesture(gesture, event) {
+    const dx = event.clientX-gesture.x, dy = event.clientY-gesture.y;
+    if (!gesture.axis && Math.max(Math.abs(dx),Math.abs(dy)) < 6) return null;
+    gesture.axis ||= Math.abs(dx) >= Math.abs(dy) ? 'y' : 'x';
+    return {
+      yaw: gesture.yaw + (gesture.axis === 'y' ? dx*0.008 : 0),
+      pitch: Math.max(-Math.PI*5/12, Math.min(Math.PI*5/12,
+        gesture.pitch + (gesture.axis === 'x' ? dy*0.008 : 0)))
+    };
+  }
 
   function endARDrag() {
     const surface = $('ar-rotate-surface');
@@ -57,8 +71,9 @@
   });
   $('ar-rotate-surface').addEventListener('pointermove', event => {
     if (!arDrag || event.pointerId !== arDrag.id) return;
-    arYaw = arDrag.yaw + (event.clientX-arDrag.x)*0.012;
-    arPitch = Math.max(-Math.PI/2, Math.min(Math.PI/2, arDrag.pitch+(event.clientY-arDrag.y)*0.01));
+    const angles = rotationGesture(arDrag,event);
+    if (!angles) return;
+    arYaw = angles.yaw; arPitch = angles.pitch;
     applyARRotation();
     event.preventDefault();
   });
@@ -243,8 +258,8 @@
     const model = $('showcase-motor')?.object3D;
     if (showcaseReady && model) {
       const delta = lastSpinTime ? Math.min(now - lastSpinTime, 50) : 0;
-      if (!drag && !reduceMotion && now - lastDragAt > 5000) showcaseYaw += delta * 0.00018;
-      model.rotation.y = showcaseYaw;
+      if (!drag && !showcaseManuallyAdjusted && !reduceMotion && now - lastDragAt > 5000) showcaseYaw += delta * 0.00018;
+      model.rotation.set(showcasePitch, showcaseYaw, 0, 'YXZ');
       updateDemoLeaders();
     }
     lastSpinTime = now;
@@ -297,8 +312,8 @@
     $('showcase-demo').innerHTML = showcaseMarkup('showcase');
     showcaseScene = $('showcase-scene');
     showcaseScene.addEventListener('pointerdown', event => {
-      if (!demo || phase !== 'inspect' || !showcaseReady || event.button !== 0) return;
-      drag = {id:event.pointerId, x:event.clientX, yaw:showcaseYaw};
+      if (!demo || phase !== 'inspect' || !showcaseReady || drag || !event.isPrimary || event.button !== 0) return;
+      drag = {id:event.pointerId, x:event.clientX, y:event.clientY, yaw:showcaseYaw, pitch:showcasePitch};
       lastDragAt = performance.now();
       event.target.setPointerCapture?.(event.pointerId);
       $('showcase-demo').classList.add('dragging');
@@ -306,8 +321,11 @@
     });
     showcaseScene.addEventListener('pointermove', event => {
       if (!drag || event.pointerId !== drag.id) return;
-      showcaseYaw = drag.yaw + (event.clientX - drag.x) * 0.012;
-      $('showcase-motor').object3D.rotation.y = showcaseYaw;
+      const angles = rotationGesture(drag,event);
+      if (!angles) return;
+      showcaseManuallyAdjusted = true;
+      showcaseYaw = angles.yaw; showcasePitch = angles.pitch;
+      $('showcase-motor').object3D.rotation.set(showcasePitch,showcaseYaw,0,'YXZ');
       event.preventDefault();
     });
     const finishDrag = event => {
@@ -318,6 +336,7 @@
     };
     showcaseScene.addEventListener('pointerup', finishDrag);
     showcaseScene.addEventListener('pointercancel', finishDrag);
+    showcaseScene.addEventListener('lostpointercapture', finishDrag);
     $('showcase-motor').addEventListener('model-loaded', () => {
       showcaseReady = true;
       show('demo-fallback', false);

@@ -50,3 +50,20 @@ body.in-session.rehearsal-mode #inspection-panel .part-tabs{margin:12px 0}
 body.in-session.rehearsal-mode #inspection-panel .part-tabs button{font-size:15.5px;min-height:52px}
 body.in-session.rehearsal-mode #inspection-panel .inspection-actions .button{font-size:15px;min-height:60px}
 body.in-session.rehearsal-mode #inspection-panel .risk-notice p{font-size:16px}
+/* Compact phone panel in both modes, including the camera view shown in feedback. */
+@media(max-width:760px){
+ body.in-session #inspection-panel,body.in-session.rehearsal-mode #inspection-panel{padding:12px;max-height:46dvh;bottom:calc(24px + env(safe-area-inset-bottom))}
+ body.in-session #inspection-panel .panel-heading{gap:6px}
+ body.in-session #inspection-panel .panel-heading .eyebrow{font-size:9px;letter-spacing:1px}
+ body.in-session #inspection-panel .badge{font-size:10px;padding:4px 6px}
+ body.in-session #inspection-panel .part-tabs,body.in-session.rehearsal-mode #inspection-panel .part-tabs{margin:9px 0}
+ body.in-session #inspection-panel .part-tabs button,body.in-session.rehearsal-mode #inspection-panel .part-tabs button{font-size:13px;min-height:44px;padding:5px 3px}
+ body.in-session #inspection-panel .part-detail h2,body.in-session.rehearsal-mode #inspection-panel .part-detail h2{font-size:17px}
+ body.in-session #inspection-panel .detail-status{font-size:12px}
+ body.in-session #inspection-panel .part-detail p,body.in-session.rehearsal-mode #inspection-panel .part-detail p{font-size:14px;line-height:1.35;margin:7px 0 10px}
+ body.in-session #inspection-panel .inspection-actions .button,body.in-session.rehearsal-mode #inspection-panel .inspection-actions .button{font-size:12.5px;min-height:48px;padding:8px 5px}
+ body.in-session #inspection-panel .risk-notice{padding:7px 9px;margin-bottom:10px}
+ body.in-session #inspection-panel .risk-notice strong{font-size:12px}
+ body.in-session #inspection-panel .risk-notice p,body.in-session.rehearsal-mode #inspection-panel .risk-notice p{font-size:13px;line-height:1.35}
+}
+@media(orientation:landscape) and (max-height:550px){body.in-session #inspection-panel,body.in-session.rehearsal-mode #inspection-panel{max-height:70dvh}}
