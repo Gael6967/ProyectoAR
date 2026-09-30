@@ -385,6 +385,7 @@
     phase = 'loading';
     const currentSession = ++session;
     document.body.classList.add('in-session');
+    document.body.classList.toggle('rehearsal-mode', demo);
     show('home', false); show('experience', true);
     $('simulation-label').textContent = demo ? 'ENSAYO · DATOS SIMULADOS' : 'DATOS SIMULADOS';
     show('demo-background', demo);

@@ -42,3 +42,11 @@ body.in-session #inspection-panel .part-detail h2{font-size:21px}
 body.in-session #inspection-panel .part-tabs button{font-size:16px;min-height:54px}
 body.in-session #inspection-panel .inspection-actions .button{font-size:16px;min-height:62px}
 body.in-session #inspection-panel .risk-notice p{font-size:17px}
+/* Rehearsal uses a middle size between the original and enlarged panels. */
+body.in-session.rehearsal-mode #inspection-panel{padding:16px}
+body.in-session.rehearsal-mode #inspection-panel .part-detail p{font-size:17px}
+body.in-session.rehearsal-mode #inspection-panel .part-detail h2{font-size:20px}
+body.in-session.rehearsal-mode #inspection-panel .part-tabs{margin:12px 0}
+body.in-session.rehearsal-mode #inspection-panel .part-tabs button{font-size:15.5px;min-height:52px}
+body.in-session.rehearsal-mode #inspection-panel .inspection-actions .button{font-size:15px;min-height:60px}
+body.in-session.rehearsal-mode #inspection-panel .risk-notice p{font-size:16px}
