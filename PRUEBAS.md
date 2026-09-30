@@ -40,3 +40,9 @@ No se ha validado físicamente un iPhone ni un teléfono Android en este entorno
 - Panel de inspección con texto de 16 px y acciones de al menos 58 px de altura; probado en 390×844, 320×568 y 844×390.
 - Escala AR aumentada de 0.62 a 0.78 (aproximadamente 26 %).
 - Repetición del recorrido completo del ensayo, estabilidad de los controles durante el giro y reconocimiento real mediante webcam sintética.
+
+## Giro manual AR (30/09/2026)
+- Prueba con reconocimiento real de Hiro desde webcam sintética: arrastre horizontal modifica la rotación local del modelo y las referencias, con panel fijo.
+- Restablecer devuelve el ángulo local a cero; el ángulo elegido se conserva al perder y recuperar Hiro.
+- Controles de giro ocultos sin seguimiento y durante el procedimiento; los hotspots, riesgo y finalización continúan funcionando.
+- Regresión del ensayo rotativo y recorridos en tres tamaños superada. Pendiente comprobar el gesto táctil en el teléfono físico de la presentación.

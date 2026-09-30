@@ -180,3 +180,6 @@ Las licencias de terceros se conservan en `vendor/`. No hay analítica, servicio
 
 ## Señalización y legibilidad (30/09/2026)
 Los botones 1, 2 y 3 tienen líneas de color y puntos sobre la carcasa azul, el rodamiento naranja y la conexión amarilla. En el ensayo los botones permanecen fijos; los extremos de las líneas siguen las piezas cuando gira el modelo. En AR las referencias siguen la posición del marcador. El motor AR es un 26 % más grande que la versión anterior; aleja un poco el teléfono si queda fuera del encuadre. El panel inferior tiene textos y controles ampliados, con desplazamiento vertical en pantallas pequeñas.
+
+## Giro manual con cámara
+Con Hiro detectado, arrastra horizontalmente sobre la vista del motor para girarlo 360° sobre el marcador. Las referencias de componentes y la zona de riesgo acompañan ese giro. Usa «Restablecer giro» para recuperar la orientación inicial respecto de Hiro. El ángulo manual se conserva al perder y recuperar el marcador; el gesto se desactiva durante el procedimiento y cuando no hay seguimiento. Mantén Hiro visible mientras inspeccionas.

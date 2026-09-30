@@ -28,3 +28,9 @@ body.in-session{overflow:hidden;background:transparent}.experience{position:fixe
 @media(min-width:1100px){.inspection-panel{width:480px}}
 @media(max-height:680px){.inspection-panel{padding:14px;max-height:52dvh}}
 @media(orientation:landscape) and (max-height:550px){.inspection-panel{max-height:73dvh}}
+/* Transparent gesture surface sits below all inspection controls. */
+#ar-rotate-surface{position:absolute;inset:0;touch-action:none;cursor:grab}
+#ar-rotate-surface.dragging{cursor:grabbing}
+#ar-rotate-controls{position:absolute;top:calc(108px + env(safe-area-inset-top));left:16px;right:16px;display:flex;align-items:center;justify-content:space-between;gap:8px;z-index:1;pointer-events:none;font-size:12px}
+#ar-rotate-controls span{padding:6px 8px;border-radius:5px;background:#171a20d9}
+#ar-rotation-reset{pointer-events:auto;min-height:44px;padding:8px 10px;border:1px solid #ffffff50;border-radius:8px;background:#171a20e8;color:#fff;font-size:12px;touch-action:manipulation}

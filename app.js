@@ -28,8 +28,47 @@
   let cameraTimer, lostTimer, wakeLock;
   let scriptsPromise, aframePromise, homeScene, showcaseScene, showcaseReady = false;
   let showcaseYaw = -Math.PI / 10, showcaseFrame = 0, lastSpinTime = 0, lastDragAt = -Infinity, drag = null;
+  let arYaw = 0, arDrag = null;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const show = (id, visible) => { $(id).hidden = !visible; };
+
+  function endARDrag() {
+    const surface = $('ar-rotate-surface');
+    if (arDrag && surface.hasPointerCapture(arDrag.id)) surface.releasePointerCapture(arDrag.id);
+    arDrag = null;
+    surface.classList.remove('dragging');
+  }
+  function updateARRotationControls() {
+    const active = !demo && tracked && phase === 'inspect';
+    show('ar-rotate-surface', active);
+    show('ar-rotate-controls', active);
+    if (!active) endARDrag();
+  }
+  function applyARRotation() {
+    const pivot = $('ar-model-pivot')?.object3D;
+    if (pivot) pivot.rotation.y = arYaw;
+  }
+  $('ar-rotate-surface').addEventListener('pointerdown', event => {
+    if (demo || !tracked || phase !== 'inspect' || arDrag || !event.isPrimary || event.button !== 0) return;
+    arDrag = {id:event.pointerId,x:event.clientX,yaw:arYaw};
+    event.currentTarget.setPointerCapture(event.pointerId);
+    event.currentTarget.classList.add('dragging');
+    event.preventDefault();
+  });
+  $('ar-rotate-surface').addEventListener('pointermove', event => {
+    if (!arDrag || event.pointerId !== arDrag.id) return;
+    arYaw = arDrag.yaw + (event.clientX-arDrag.x)*0.012;
+    applyARRotation();
+    event.preventDefault();
+  });
+  for (const name of ['pointerup','pointercancel','lostpointercapture']) {
+    $('ar-rotate-surface').addEventListener(name, event => {
+      if (arDrag?.id === event.pointerId) endARDrag();
+    });
+  }
+  $('ar-rotation-reset').addEventListener('click', () => {
+    endARDrag(); arYaw = 0; applyARRotation();
+  });
 
   function selectPart(key) {
     const part = parts[key];
@@ -96,6 +135,7 @@
         show('tracking-guide', !detected && phase !== 'procedure');
       }, 400);
     }
+    updateARRotationControls();
   }
 
   function script(src) {
@@ -123,7 +163,7 @@
       AFRAME.registerComponent('maintenance-anchors', {
         init() {
           this.vector = new AFRAME.THREE.Vector3();
-          this.targets = componentPoints.map(({key,point:[x,y,z],offset}) => ({key,offset,element:$('anchor-'+key),x:x*AR_MODEL_SCALE,y:y*AR_MODEL_SCALE,z:z*AR_MODEL_SCALE}));
+          this.targets = componentPoints.map(({key,point:[x,y,z],offset}) => ({key,offset,element:$('anchor-'+key),x,y,z}));
         },
         tick() {
           // AR.js fits the video beyond the viewport in portrait mode. Give the
@@ -143,10 +183,12 @@
           const canvas = this.el.sceneEl.renderer?.domElement;
           if (!camera || !canvas) return;
           const rect = canvas.getBoundingClientRect();
-          this.el.object3D.updateMatrixWorld(true);
+          const pivot = $('ar-model-pivot')?.object3D;
+          if (!pivot) return;
+          pivot.updateWorldMatrix(true, false);
           for (const target of this.targets) {
             this.vector.set(target.x, target.y, target.z);
-            this.el.object3D.localToWorld(this.vector);
+            pivot.localToWorld(this.vector);
             this.vector.project(camera);
             const visible = this.vector.z > -1 && this.vector.z < 1;
             target.element.style.visibility = visible ? 'visible' : 'hidden';
@@ -276,7 +318,7 @@
           <img id="motor-texture" src="assets/motor.svg" crossorigin="anonymous">
         </a-assets>
         <a-marker id="motor-marker" type="pattern" url="assets/motor-m01.patt" size="1" smooth="true" smoothCount="5" smoothTolerance="0.01" smoothThreshold="2" emitevents="true" maintenance-anchors>
-          <a-entity scale="${AR_MODEL_SCALE} ${AR_MODEL_SCALE} ${AR_MODEL_SCALE}">
+          <a-entity id="ar-model-pivot" scale="${AR_MODEL_SCALE} ${AR_MODEL_SCALE} ${AR_MODEL_SCALE}">
             <a-entity id="motor-3d" gltf-model="#motor-glb"></a-entity>
             <a-plane id="motor-fallback" visible="false" position="0 0.025 0" rotation="-90 0 0" width="1.6" height="0.93" material="shader: flat; src: #motor-texture; transparent: true; side: double; depthWrite: false"></a-plane>
             <a-entity id="risk-geometry" visible="false">
@@ -372,6 +414,8 @@
   });
 
   function stopCamera() {
+    endARDrag();
+    show('ar-rotate-surface', false); show('ar-rotate-controls', false);
     clearTimeout(cameraTimer); clearTimeout(lostTimer);
     const source = scene?.systems?.arjs?._arSession?.arSource;
     const video = document.getElementById('arjs-video');
@@ -438,6 +482,7 @@
   function startProcedure() {
     if (!detected) return;
     phase = 'procedure'; step = 0;
+    updateARRotationControls();
     stopShowcaseSpin(); show('demo-rotate-hint', false);
     show('inspection-panel', false); show('anchors', false); show('tracking-guide', false);
     show('procedure-panel', true);
@@ -491,7 +536,7 @@
   $('step-next').addEventListener('click', () => { if (step < 4) { step++; renderStep(); } else complete(); });
   $('step-back').addEventListener('click', () => {
     if (step > 0) { step--; renderStep(); }
-    else { phase = 'inspect'; show('procedure-panel', false); show('inspection-panel', true); show('anchors', tracked); if (demo) { show('demo-rotate-hint', true); placeDemoAnchors(); startShowcaseSpin(); } }
+    else { phase = 'inspect'; show('procedure-panel', false); show('inspection-panel', true); show('anchors', tracked); updateARRotationControls(); if (demo) { show('demo-rotate-hint', true); placeDemoAnchors(); startShowcaseSpin(); } }
   });
   $('resume-video').addEventListener('click', () => { const video = document.getElementById('arjs-video'); video?.play().then(() => show('resume-video', false)).catch(() => fail('El video está pausado', 'Reinicia la inspección y acepta el permiso de cámara.')); });
   $('retry').addEventListener('click', () => { stopCamera(); location.replace(new URL('?start=1', location.href).href); });
