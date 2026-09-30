@@ -58,3 +58,8 @@ No se ha validado físicamente un iPhone ni un teléfono Android en este entorno
 - Ensayo: el ángulo manual se conserva después de 5 segundos; botones y panel fijos.
 - Recorrido AR con cámara sintética, restablecimiento, pérdida/recuperación y finalización superado.
 - Recorrido sin cámara en tres tamaños y revisión visual móvil del panel compacto superados.
+
+## Panel inferior independiente de la cámara
+- Prueba móvil AR: el borde inferior del video queda por encima del panel, cuya altura no supera 260 px.
+- Recorrido de ensayo en tres tamaños; botones de acción disponibles y detalles desplazables.
+- Giro X/Y, señalizaciones, pérdida/recuperación de Hiro y finalización comprobados con webcam sintética.

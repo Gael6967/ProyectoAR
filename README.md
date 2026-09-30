@@ -191,3 +191,6 @@ La interfaz mantiene el ancho real del teléfono aunque AR.js redimensione el vi
 ## Ajuste preciso y panel compacto en teléfonos
 En ambos modos, cada gesto controla un solo eje: horizontal Y o vertical X, decidido por la dirección inicial. Se ignoran movimientos menores de 6 px y el eje Z permanece en cero respecto del marcador o escena. La inclinación se limita a ±75°. Tras ajustar manualmente el ensayo, el giro automático se detiene para conservar la vista elegida. El seguimiento físico de Hiro sigue cambiando la pose global en AR.
 En teléfonos el panel es compacto en ambos modos: texto de 14 px, título de 17 px y acciones de al menos 48 px. Si el contenido no cabe, el panel permite desplazamiento vertical.
+
+## Panel dentro de la franja inferior
+En teléfonos verticales el panel queda en una franja de 30 % del alto disponible (entre 200 y 260 px). Los detalles se desplazan dentro y las acciones permanecen visibles. La cámara conserva el encuadre completo y se ajusta al espacio superior, sin superponerse al panel. Al activar el riesgo se desplaza el contenido hacia la advertencia.

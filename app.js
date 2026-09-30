@@ -95,6 +95,7 @@
     $('part-status').className = `detail-status ${part.color}`;
     $('part-description').textContent = part.description;
     document.querySelectorAll('[data-part]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.part === key)));
+    $('inspection-content').scrollTop = 0;
     componentPoints.forEach(part => $('leader-' + part.key).classList.toggle('selected', part.key === key));
   }
 
@@ -230,10 +231,17 @@
     source.onResizeElement = function () {
       const video = this.domElement;
       if (!video?.videoWidth || !video.videoHeight) return;
-      const factor = Math.min(innerWidth/video.videoWidth, innerHeight/video.videoHeight);
+      let top = 0, availableHeight = innerHeight;
+      const panel = $('inspection-panel');
+      if (innerWidth <= 760 && innerHeight > innerWidth && !panel.hidden) {
+        // The camera and the bottom dock own separate areas on portrait phones.
+        top = Math.max(156, $('ar-rotate-controls').getBoundingClientRect().bottom + 8);
+        availableHeight = Math.max(80, panel.getBoundingClientRect().top - top - 10);
+      }
+      const factor = Math.min(innerWidth/video.videoWidth, availableHeight/video.videoHeight);
       const width = video.videoWidth*factor, height = video.videoHeight*factor;
       Object.assign(video.style, {width:`${width}px`,height:`${height}px`,
-        marginLeft:`${(innerWidth-width)/2}px`,marginTop:`${(innerHeight-height)/2}px`});
+        marginLeft:`${(innerWidth-width)/2}px`,marginTop:`${top+(availableHeight-height)/2}px`});
     };
     source.copyElementSizeTo = function (element) {
       if (element === document.body) return;
@@ -505,6 +513,10 @@
     show('demo-risk', risk && demo);
     $('risk-geometry')?.setAttribute('visible', risk);
     if (risk) selectPart('bearing');
+    if (risk) requestAnimationFrame(() => {
+      const content = $('inspection-content');
+      content.scrollTop = content.scrollHeight;
+    });
     if (demo) placeDemoAnchors();
   }
 

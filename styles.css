@@ -67,3 +67,9 @@ body.in-session.rehearsal-mode #inspection-panel .risk-notice p{font-size:16px}
  body.in-session #inspection-panel .risk-notice p,body.in-session.rehearsal-mode #inspection-panel .risk-notice p{font-size:13px;line-height:1.35}
 }
 @media(orientation:landscape) and (max-height:550px){body.in-session #inspection-panel,body.in-session.rehearsal-mode #inspection-panel{max-height:70dvh}}
+/* Portrait phones reserve a lower dock; its content scrolls, its actions stay put. */
+@media(max-width:760px) and (orientation:portrait){
+ body.in-session #inspection-panel,body.in-session.rehearsal-mode #inspection-panel{height:clamp(200px,30dvh,260px);max-height:clamp(200px,30dvh,260px);display:flex;flex-direction:column;gap:8px;overflow:hidden;padding:10px}
+ #inspection-content{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#626973 transparent;padding-right:3px}
+ body.in-session #inspection-panel .inspection-actions{flex:none;margin:0}
+}

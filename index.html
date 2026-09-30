@@ -55,10 +55,12 @@
     </div>
     <div id="lost-notice" class="lost-notice" hidden role="status">Marcador fuera de vista. Vuelve a encuadrarlo.</div>
     <section id="inspection-panel" class="inspection-panel glass" hidden aria-label="Controles de inspección">
+      <div id="inspection-content" tabindex="0" aria-label="Detalles de inspección">
       <div class="panel-heading"><span class="eyebrow">INSPECCIÓN / M-01</span><span class="badge warning">⚠ Anomalía detectada</span></div>
       <div class="part-tabs" role="group" aria-label="Selecciona un componente"><button data-part="motor" aria-pressed="true">① Motor</button><button data-part="bearing" aria-pressed="false">② Rodamiento</button><button data-part="electrical" aria-pressed="false">③ Conexión eléctrica</button></div>
       <div class="part-detail" aria-live="polite"><div><h2 id="part-name">Motor Eléctrico M-01</h2><span id="part-status" class="detail-status warning-text">Advertencia</span></div><p id="part-description">Temperatura elevada: 82 °C. Se recomienda revisar la ventilación del motor.</p></div>
       <div id="risk-notice" class="risk-notice" hidden role="status"><strong>⚠ ZONA DE RIESGO</strong><p>No manipular el equipo mientras se encuentre energizado.</p></div>
+      </div>
       <div class="inspection-actions"><button id="risk-toggle" class="button secondary" aria-pressed="false">VER ZONA DE RIESGO</button><button id="procedure-start" class="button primary">INICIAR PROCEDIMIENTO</button></div>
     </section>
     <section id="procedure-panel" class="procedure-panel glass" hidden aria-labelledby="step-title">
