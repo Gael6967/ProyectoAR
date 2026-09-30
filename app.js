@@ -28,7 +28,7 @@
   let cameraTimer, lostTimer, wakeLock;
   let scriptsPromise, aframePromise, homeScene, showcaseScene, showcaseReady = false;
   let showcaseYaw = -Math.PI / 10, showcaseFrame = 0, lastSpinTime = 0, lastDragAt = -Infinity, drag = null;
-  let arYaw = 0, arDrag = null;
+  let arYaw = 0, arPitch = 0, arDrag = null;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const show = (id, visible) => { $(id).hidden = !visible; };
 
@@ -46,11 +46,11 @@
   }
   function applyARRotation() {
     const pivot = $('ar-model-pivot')?.object3D;
-    if (pivot) pivot.rotation.y = arYaw;
+    if (pivot) pivot.rotation.set(arPitch, arYaw, 0, 'YXZ');
   }
   $('ar-rotate-surface').addEventListener('pointerdown', event => {
     if (demo || !tracked || phase !== 'inspect' || arDrag || !event.isPrimary || event.button !== 0) return;
-    arDrag = {id:event.pointerId,x:event.clientX,yaw:arYaw};
+    arDrag = {id:event.pointerId,x:event.clientX,y:event.clientY,yaw:arYaw,pitch:arPitch};
     event.currentTarget.setPointerCapture(event.pointerId);
     event.currentTarget.classList.add('dragging');
     event.preventDefault();
@@ -58,6 +58,7 @@
   $('ar-rotate-surface').addEventListener('pointermove', event => {
     if (!arDrag || event.pointerId !== arDrag.id) return;
     arYaw = arDrag.yaw + (event.clientX-arDrag.x)*0.012;
+    arPitch = Math.max(-Math.PI/2, Math.min(Math.PI/2, arDrag.pitch+(event.clientY-arDrag.y)*0.01));
     applyARRotation();
     event.preventDefault();
   });
@@ -67,7 +68,7 @@
     });
   }
   $('ar-rotation-reset').addEventListener('click', () => {
-    endARDrag(); arYaw = 0; applyARRotation();
+    endARDrag(); arYaw = 0; arPitch = 0; applyARRotation();
   });
 
   function selectPart(key) {
@@ -168,6 +169,7 @@
         tick() {
           // AR.js fits the video beyond the viewport in portrait mode. Give the
           // embedded scene exactly the same rectangle, or A-Frame compresses X.
+          fitARCamera(this.el.sceneEl);
           const video = document.getElementById('arjs-video');
           const holder = $('scene-container');
           if (video?.videoWidth && (holder.style.width !== video.style.width || holder.style.height !== video.style.height || holder.style.left !== video.style.marginLeft || holder.style.top !== video.style.marginTop)) {
@@ -203,6 +205,26 @@
       });
     })();
     return scriptsPromise;
+  }
+
+  function fitARCamera(arScene) {
+    const source = arScene.systems?.arjs?._arSession?.arSource;
+    if (!source || source.maintenanceFit) return;
+    source.maintenanceFit = true;
+    // Preserve the entire video frame without enlarging the page layout.
+    source.onResizeElement = function () {
+      const video = this.domElement;
+      if (!video?.videoWidth || !video.videoHeight) return;
+      const factor = Math.min(innerWidth/video.videoWidth, innerHeight/video.videoHeight);
+      const width = video.videoWidth*factor, height = video.videoHeight*factor;
+      Object.assign(video.style, {width:`${width}px`,height:`${height}px`,
+        marginLeft:`${(innerWidth-width)/2}px`,marginTop:`${(innerHeight-height)/2}px`});
+    };
+    source.copyElementSizeTo = function (element) {
+      if (element === document.body) return;
+      for (const property of ['width','height','marginLeft','marginTop']) element.style[property] = this.domElement.style[property];
+    };
+    source.onResizeElement();
   }
 
   function moveShowcase(toDemo) {
@@ -312,7 +334,7 @@
     $('scene-container').innerHTML = `
       <a-scene embedded vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false"
         renderer="alpha: true; antialias: true; precision: medium" loading-screen="enabled: false"
-        arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono; cameraParametersUrl: assets/camera_para.dat; sourceWidth: 1280; sourceHeight: 720; displayWidth: 1280; displayHeight: 720; canvasWidth: 640; canvasHeight: 480; maxDetectionRate: 30; patternRatio: 0.5">
+        arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono; cameraParametersUrl: assets/camera_para.dat; sourceWidth: ${innerWidth < innerHeight ? 720 : 1280}; sourceHeight: ${innerWidth < innerHeight ? 1280 : 720}; displayWidth: 1280; displayHeight: 720; canvasWidth: 640; canvasHeight: 480; maxDetectionRate: 30; patternRatio: 0.5">
         <a-assets timeout="10000">
           <a-asset-item id="motor-glb" src="assets/motor-m01.glb"></a-asset-item>
           <img id="motor-texture" src="assets/motor.svg" crossorigin="anonymous">

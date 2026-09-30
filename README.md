@@ -183,3 +183,6 @@ Los botones 1, 2 y 3 tienen líneas de color y puntos sobre la carcasa azul, el 
 
 ## Giro manual con cámara
 Con Hiro detectado, arrastra horizontalmente sobre la vista del motor para girarlo 360° sobre el marcador. Las referencias de componentes y la zona de riesgo acompañan ese giro. Usa «Restablecer giro» para recuperar la orientación inicial respecto de Hiro. El ángulo manual se conserva al perder y recuperar el marcador; el gesto se desactiva durante el procedimiento y cuando no hay seguimiento. Mantén Hiro visible mientras inspeccionas.
+
+## Encuadre móvil y giro vertical
+La interfaz mantiene el ancho real del teléfono aunque AR.js redimensione el video. El panel usa textos de 18 px y botones de acción de 16 px. Arrastra horizontalmente para girar y verticalmente para inclinar hasta 90° en cada sentido; Restablecer giro reinicia ambos ejes. La cámara solicita formato vertical en pantallas verticales y se muestra completa, sin recorte de relleno; pueden aparecer bandas según la proporción que entregue el dispositivo. Esto corrige el recorte visual, no cambia el zoom óptico del teléfono.

@@ -34,3 +34,11 @@ body.in-session{overflow:hidden;background:transparent}.experience{position:fixe
 #ar-rotate-controls{position:absolute;top:calc(108px + env(safe-area-inset-top));left:16px;right:16px;display:flex;align-items:center;justify-content:space-between;gap:8px;z-index:1;pointer-events:none;font-size:12px}
 #ar-rotate-controls span{padding:6px 8px;border-radius:5px;background:#171a20d9}
 #ar-rotation-reset{pointer-events:auto;min-height:44px;padding:8px 10px;border:1px solid #ffffff50;border-radius:8px;background:#171a20e8;color:#fff;font-size:12px;touch-action:manipulation}
+/* Keep AR.js video sizing from expanding the mobile layout viewport. */
+html{width:100%;overflow-x:clip}
+body.in-session{width:100%!important;max-width:100%!important;height:100dvh!important;margin:0!important;background:#101113}
+body.in-session #inspection-panel .part-detail p{font-size:18px;line-height:1.45}
+body.in-session #inspection-panel .part-detail h2{font-size:21px}
+body.in-session #inspection-panel .part-tabs button{font-size:16px;min-height:54px}
+body.in-session #inspection-panel .inspection-actions .button{font-size:16px;min-height:62px}
+body.in-session #inspection-panel .risk-notice p{font-size:17px}

@@ -46,3 +46,8 @@ No se ha validado físicamente un iPhone ni un teléfono Android en este entorno
 - Restablecer devuelve el ángulo local a cero; el ángulo elegido se conserva al perder y recuperar Hiro.
 - Controles de giro ocultos sin seguimiento y durante el procedimiento; los hotspots, riesgo y finalización continúan funcionando.
 - Regresión del ensayo rotativo y recorridos en tres tamaños superada. Pendiente comprobar el gesto táctil en el teléfono físico de la presentación.
+
+## Corrección móvil y giro vertical (30/09/2026)
+- Emulación móvil 390×844, DPR 2: ancho de layout 390, escala visual 1, cuerpo sin expansión y video completo dentro de pantalla.
+- Reconocimiento Hiro real con webcam sintética: arrastre vertical inclina el modelo, restablecimiento reinicia ambos ejes; pérdida/recuperación, controles y cinco pasos superados.
+- Recorrido sin cámara en tres tamaños superado tras ampliar el panel. Pendiente confirmar encuadre y gesto táctil con la cámara física del usuario.
